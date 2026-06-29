@@ -66,7 +66,7 @@
                 </div>
               </td>
 
-              <td class="capitalize">{{ cliente.tipo }}</td>
+              <td>{{ formatTipo(cliente.tipo) }}</td>
               <td>{{ cliente.correo || '—' }}</td>
               <td>{{ cliente.telefono || '—' }}</td>
               <td>{{ cliente.ciudad || '—' }}</td>
@@ -119,46 +119,46 @@
       <div class="form-grid">
         <label>
           Nombre
-          <ion-input [(ngModel)]="form.nombre" placeholder="Dermacenter Mazatlán"></ion-input>
+          <ion-input [(ngModel)]="form.nombre" placeholder="Ej. Dermacenter Mazatlán"></ion-input>
         </label>
 
         <label>
           Tipo
           <ion-select [(ngModel)]="form.tipo" interface="popover">
             <ion-select-option *ngFor="let tipo of tipos" [value]="tipo">
-              {{ tipo }}
+              {{ formatTipo(tipo) }}
             </ion-select-option>
           </ion-select>
         </label>
 
         <label>
           Correo
-          <ion-input type="email" [(ngModel)]="form.correo" placeholder="cliente@email.com"></ion-input>
+          <ion-input type="email" [(ngModel)]="form.correo" placeholder="Ej. cliente@email.com"></ion-input>
         </label>
 
         <label>
           Teléfono
-          <ion-input [(ngModel)]="form.telefono" placeholder="6690000000"></ion-input>
+          <ion-input [(ngModel)]="form.telefono" placeholder="Ej. 6690000000"></ion-input>
         </label>
 
         <label>
           Ciudad
-          <ion-input [(ngModel)]="form.ciudad" placeholder="Mazatlán"></ion-input>
+          <ion-input [(ngModel)]="form.ciudad" placeholder="Ej. Mazatlán"></ion-input>
         </label>
 
         <label>
           Estado república
-          <ion-input [(ngModel)]="form.estado_republica" placeholder="Sinaloa"></ion-input>
+          <ion-input [(ngModel)]="form.estado_republica" placeholder="Ej. Sinaloa"></ion-input>
         </label>
 
         <label>
           Límite crédito
-          <ion-input type="number" [(ngModel)]="form.limite_credito"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.limite_credito" placeholder="Ej. 20000"></ion-input>
         </label>
 
         <label>
           Saldo pendiente
-          <ion-input type="number" [(ngModel)]="form.saldo_pendiente"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.saldo_pendiente" placeholder="Ej. 0"></ion-input>
         </label>
 
         <label>
