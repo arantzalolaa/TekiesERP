@@ -36,7 +36,7 @@ import {
   templateUrl: './inventario.page.html',
   styleUrls: ['./inventario.page.scss'],
   standalone: true,
-  imports: [IonToolbar, IonHeader, 
+  imports: [IonToolbar, IonHeader,
     CommonModule,
     FormsModule,
     RouterModule,
@@ -94,10 +94,10 @@ export class InventarioPage implements OnInit {
       categoria: '',
       sku: '',
       descripcion: '',
-      unidad: 'pieza',
-      stock: 0,
-      stock_minimo: 20,
-      costo_unitario: 0,
+      unidad: '',
+      stock: null as any,
+      stock_minimo: null as any,
+      costo_unitario: null as any,
       proveedor_id: null,
       activo: true,
     };
@@ -172,9 +172,9 @@ export class InventarioPage implements OnInit {
       categoria: this.form.categoria.trim(),
       sku: this.form.sku.trim().toUpperCase(),
       descripcion: this.form.descripcion?.trim() || null,
-      unidad: this.form.unidad.trim() || 'pieza',
+      unidad: this.form.unidad?.trim() || 'pieza',
       stock: Number(this.form.stock) || 0,
-      stock_minimo: Number(this.form.stock_minimo) || 0,
+      stock_minimo: Number(this.form.stock_minimo) || 20,
       costo_unitario: Number(this.form.costo_unitario) || 0,
       proveedor_id: this.form.proveedor_id ? Number(this.form.proveedor_id) : null,
       activo: !!this.form.activo,
@@ -217,6 +217,11 @@ export class InventarioPage implements OnInit {
   getProveedorName(id?: number | null): string {
     if (!id) return 'Sin proveedor';
     return this.proveedores.find((proveedor) => proveedor.id === id)?.nombre || 'Sin proveedor';
+  }
+
+  formatTipo(value: string): string {
+    if (!value) return '—';
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   }
 
   formatCurrency(value: number | undefined): string {
