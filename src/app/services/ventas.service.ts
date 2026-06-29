@@ -42,6 +42,21 @@ export class VentasService {
     return data as VentaDetalle[];
   }
 
+  async getById(id: number): Promise<Venta | null> {
+    const { data, error } = await this.supabase
+      .from('ventas')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error al cargar venta:', error.message);
+      return null;
+    }
+
+    return data as Venta;
+  }
+
   async getClientes(): Promise<Cliente[]> {
     const { data, error } = await this.supabase
       .from('clientes')
