@@ -125,41 +125,41 @@
       <div class="form-grid">
         <label>
           Nombre
-          <ion-input [(ngModel)]="form.nombre" placeholder="HeliBand Sport"></ion-input>
+          <ion-input [(ngModel)]="form.nombre" placeholder="Ej. HeliBand Sport"></ion-input>
         </label>
 
         <label>
           SKU
-          <ion-input [(ngModel)]="form.sku" placeholder="HB-SPORT"></ion-input>
+          <ion-input [(ngModel)]="form.sku" placeholder="Ej. HB-SPORT"></ion-input>
         </label>
 
         <label>
           Categoría
-          <ion-input [(ngModel)]="form.categoria" placeholder="Pulsera UV"></ion-input>
+          <ion-input [(ngModel)]="form.categoria" placeholder="Ej. Pulsera UV"></ion-input>
         </label>
 
         <label>
           Stock
-          <ion-input type="number" [(ngModel)]="form.stock"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.stock" placeholder="Ej. 25"></ion-input>
         </label>
 
         <label>
           Stock mínimo
-          <ion-input type="number" [(ngModel)]="form.stock_minimo"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.stock_minimo" placeholder="Ej. 20"></ion-input>
         </label>
 
         <label>
           Costo estimado
-          <ion-input type="number" [(ngModel)]="form.costo_estimado"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.costo_estimado" placeholder="Ej. 380"></ion-input>
         </label>
 
         <label>
           Precio venta
-          <ion-input type="number" [(ngModel)]="form.precio_venta"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.precio_venta" placeholder="Ej. 1499"></ion-input>
         </label>
 
         <label class="toggle-label">
-          Activo
+          <span>Activo</span>
           <ion-toggle [(ngModel)]="form.activo"></ion-toggle>
         </label>
 
@@ -167,7 +167,7 @@
           Descripción
           <ion-textarea
             [(ngModel)]="form.descripcion"
-            placeholder="Descripción breve del producto"
+            placeholder="Ej. Descripción breve del producto"
             rows="3"
           ></ion-textarea>
         </label>
