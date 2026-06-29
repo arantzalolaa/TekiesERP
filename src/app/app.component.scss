@@ -18,7 +18,7 @@ ion-app {
   transition: grid-template-columns 0.22s ease;
 }
 
-.app-layout.sidebar-collapsed {
+.app-layout.sidebar-closed {
   grid-template-columns: 0 minmax(0, 1fr);
 }
 
@@ -32,24 +32,11 @@ ion-app {
   min-width: 0;
   width: 100%;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at top right, rgba(116, 207, 224, 0.12), transparent 34%),
-    #f8fafc;
+  background: radial-gradient(circle at top right, rgba(116, 207, 224, 0.12), transparent 34%), #f8fafc;
 }
 
-.app-main ion-router-outlet {
-  display: block;
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-}
-
-:host ::ng-deep ion-router-outlet > .ion-page {
-  position: relative !important;
-  inset: auto !important;
-  width: 100% !important;
-  min-height: 100vh !important;
-  contain: initial !important;
+.app-main > router-outlet {
+  display: none;
 }
 
 .sidebar {
@@ -60,16 +47,14 @@ ion-app {
   padding: 22px 18px;
   display: flex;
   flex-direction: column;
-  background:
-    radial-gradient(circle at top left, rgba(116, 207, 224, 0.22), transparent 34%),
-    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  background: radial-gradient(circle at top left, rgba(116, 207, 224, 0.22), transparent 34%), linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   border-right: 1px solid rgba(221, 231, 242, 0.95);
   overflow: hidden;
   transition: transform 0.22s ease, opacity 0.18s ease;
   z-index: 20;
 }
 
-.app-layout.sidebar-collapsed .sidebar {
+.app-layout.sidebar-closed .sidebar {
   transform: translateX(-100%);
   opacity: 0;
   pointer-events: none;
@@ -209,11 +194,7 @@ ion-app {
   color: #6f7d90;
   text-decoration: none;
   font-weight: 750;
-  transition:
-    background 0.16s ease,
-    color 0.16s ease,
-    transform 0.16s ease,
-    box-shadow 0.16s ease;
+  transition: background 0.16s ease, color 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
 }
 
 .menu-link.hidden {
@@ -281,14 +262,14 @@ ion-app {
   font-size: 22px;
 }
 
-.app-layout.sidebar-collapsed .floating-menu-btn {
+.app-layout.sidebar-closed .floating-menu-btn {
   display: grid;
   place-items: center;
 }
 
 @media (max-width: 900px) {
   .app-layout,
-  .app-layout.sidebar-collapsed {
+  .app-layout.sidebar-closed {
     grid-template-columns: 1fr;
   }
 
@@ -299,7 +280,7 @@ ion-app {
     box-shadow: 20px 0 60px rgba(62, 74, 94, 0.18);
   }
 
-  .app-layout.sidebar-collapsed .sidebar {
+  .app-layout.sidebar-closed .sidebar {
     transform: translateX(-100%);
   }
 
