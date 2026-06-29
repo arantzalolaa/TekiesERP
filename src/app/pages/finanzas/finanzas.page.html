@@ -69,7 +69,7 @@
               <th>Concepto</th>
               <th>Monto</th>
               <th>Origen</th>
-              <th>Pagado</th>
+              <th>Estatus</th>
               <th>Notas</th>
               <th class="actions-col">Acciones</th>
             </tr>
@@ -81,23 +81,23 @@
 
               <td>
                 <span class="money-pill" [class.expense]="movimiento.tipo === 'gasto'">
-                  {{ movimiento.tipo }}
+                  {{ formatLabel(movimiento.tipo) }}
                 </span>
               </td>
 
               <td>
                 <div class="main-cell">
                   <strong>{{ movimiento.concepto }}</strong>
-                  <span>Ref. {{ movimiento.referencia_id || 'manual' }}</span>
+                  <span>Ref. {{ movimiento.referencia_id || 'Manual' }}</span>
                 </div>
               </td>
 
               <td>{{ formatCurrency(movimiento.monto) }}</td>
-              <td>{{ movimiento.modulo_origen || '—' }}</td>
+              <td>{{ formatLabel(movimiento.modulo_origen) }}</td>
 
               <td>
                 <span class="status" [class.off]="!movimiento.pagado">
-                  {{ movimiento.pagado ? 'Sí' : 'Pendiente' }}
+                  {{ getPagoLabel(movimiento.pagado) }}
                 </span>
               </td>
 
@@ -150,7 +150,7 @@
           Tipo
           <ion-select [(ngModel)]="form.tipo" interface="popover">
             <ion-select-option *ngFor="let tipo of tipos" [value]="tipo">
-              {{ tipo }}
+              {{ formatLabel(tipo) }}
             </ion-select-option>
           </ion-select>
         </label>
@@ -168,16 +168,14 @@
         <label>
           Origen
           <ion-select [(ngModel)]="form.modulo_origen" interface="popover">
-            <ion-select-option value="finanzas">Finanzas</ion-select-option>
-            <ion-select-option value="ventas">Ventas</ion-select-option>
-            <ion-select-option value="compras">Compras</ion-select-option>
-            <ion-select-option value="inventario">Inventario</ion-select-option>
-            <ion-select-option value="operación">Operación</ion-select-option>
+            <ion-select-option *ngFor="let origen of origenes" [value]="origen">
+              {{ formatLabel(origen) }}
+            </ion-select-option>
           </ion-select>
         </label>
 
         <label class="toggle-label">
-          Pagado
+          <span>Liquidado</span>
           <ion-toggle [(ngModel)]="form.pagado"></ion-toggle>
         </label>
 
