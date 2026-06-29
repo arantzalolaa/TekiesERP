@@ -167,7 +167,13 @@
 
         <label>
           Origen
-          <ion-input [(ngModel)]="form.modulo_origen" placeholder="finanzas"></ion-input>
+          <ion-select [(ngModel)]="form.modulo_origen" interface="popover">
+            <ion-select-option value="finanzas">Finanzas</ion-select-option>
+            <ion-select-option value="ventas">Ventas</ion-select-option>
+            <ion-select-option value="compras">Compras</ion-select-option>
+            <ion-select-option value="inventario">Inventario</ion-select-option>
+            <ion-select-option value="operación">Operación</ion-select-option>
+          </ion-select>
         </label>
 
         <label class="toggle-label">
