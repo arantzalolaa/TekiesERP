@@ -67,7 +67,7 @@
               </td>
 
               <td>{{ item.sku }}</td>
-              <td class="capitalize">{{ item.tipo }}</td>
+              <td>{{ formatTipo(item.tipo) }}</td>
               <td>{{ item.categoria }}</td>
 
               <td>
@@ -125,51 +125,51 @@
       <div class="form-grid">
         <label>
           Nombre
-          <ion-input [(ngModel)]="form.nombre" placeholder="ESP32-WROOM-32E"></ion-input>
+          <ion-input [(ngModel)]="form.nombre" placeholder="Ej. ESP32-WROOM-32E"></ion-input>
         </label>
 
         <label>
           SKU
-          <ion-input [(ngModel)]="form.sku" placeholder="ESP32-WROOM-32E"></ion-input>
+          <ion-input [(ngModel)]="form.sku" placeholder="Ej. ESP32-WROOM-32E"></ion-input>
         </label>
 
         <label>
           Tipo
           <ion-select [(ngModel)]="form.tipo" interface="popover">
             <ion-select-option *ngFor="let tipo of tipos" [value]="tipo">
-              {{ tipo }}
+              {{ formatTipo(tipo) }}
             </ion-select-option>
           </ion-select>
         </label>
 
         <label>
           Categoría
-          <ion-input [(ngModel)]="form.categoria" placeholder="Microcontrolador"></ion-input>
+          <ion-input [(ngModel)]="form.categoria" placeholder="Ej. Microcontrolador"></ion-input>
         </label>
 
         <label>
           Unidad
-          <ion-input [(ngModel)]="form.unidad" placeholder="pieza"></ion-input>
+          <ion-input [(ngModel)]="form.unidad" placeholder="Ej. Pieza"></ion-input>
         </label>
 
         <label>
           Stock
-          <ion-input type="number" [(ngModel)]="form.stock"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.stock" placeholder="Ej. 50"></ion-input>
         </label>
 
         <label>
           Stock mínimo
-          <ion-input type="number" [(ngModel)]="form.stock_minimo"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.stock_minimo" placeholder="Ej. 20"></ion-input>
         </label>
 
         <label>
           Costo unitario
-          <ion-input type="number" [(ngModel)]="form.costo_unitario"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.costo_unitario" placeholder="Ej. 85"></ion-input>
         </label>
 
         <label>
           Proveedor
-          <ion-select [(ngModel)]="form.proveedor_id" interface="popover" placeholder="Seleccionar">
+          <ion-select [(ngModel)]="form.proveedor_id" interface="popover" placeholder="Seleccionar proveedor">
             <ion-select-option [value]="null">Sin proveedor</ion-select-option>
             <ion-select-option *ngFor="let proveedor of proveedores" [value]="proveedor.id">
               {{ proveedor.nombre }}
@@ -178,7 +178,7 @@
         </label>
 
         <label class="toggle-label">
-          Activo
+          <span>Activo</span>
           <ion-toggle [(ngModel)]="form.activo"></ion-toggle>
         </label>
 
@@ -186,7 +186,7 @@
           Descripción
           <ion-textarea
             [(ngModel)]="form.descripcion"
-            placeholder="Descripción breve del componente"
+            placeholder="Ej. Descripción breve del componente"
             rows="3"
           ></ion-textarea>
         </label>
