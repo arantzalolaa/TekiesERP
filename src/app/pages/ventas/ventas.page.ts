@@ -10,7 +10,6 @@ import {
   IonSelect,
   IonSelectOption,
   IonTextarea,
-  IonToggle,
   IonSpinner,
   IonToast, IonHeader, IonToolbar, IonTitle } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -42,7 +41,6 @@ import { Cliente, Producto, Venta } from '../../models/database.models';
     IonSelect,
     IonSelectOption,
     IonTextarea,
-    IonToggle,
     IonSpinner,
     IonToast,
   ],
@@ -93,9 +91,9 @@ export class VentasPage implements OnInit {
       cliente_id: 0,
       producto_id: 0,
       fecha: new Date().toISOString().slice(0, 10),
-      cantidad: 1,
-      precio_unitario: 0,
-      costo_unitario: 0,
+      cantidad: null as any,
+      precio_unitario: null as any,
+      costo_unitario: null as any,
       estado: 'completada',
       pagada: true,
       metodo_pago: 'Tarjeta',
@@ -205,7 +203,7 @@ export class VentasPage implements OnInit {
       precio_unitario: Number(this.form.precio_unitario),
       costo_unitario: Number(this.form.costo_unitario) || 0,
       estado: this.form.estado,
-      pagada: !!this.form.pagada,
+      pagada: this.form.estado === 'completada',
       metodo_pago: this.form.metodo_pago?.trim() || 'Tarjeta',
       notas: this.form.notas?.trim() || null,
     };
@@ -250,7 +248,7 @@ export class VentasPage implements OnInit {
 
   getPagoLabel(venta: VentaDetalle): string {
     if (!venta.pagada) return 'Crédito';
-    return this.formatLabel(venta.metodo_pago || 'Pagada');
+    return this.formatLabel(venta.metodo_pago || 'Liquidada');
   }
 
   getPagoClass(venta: VentaDetalle): string {
