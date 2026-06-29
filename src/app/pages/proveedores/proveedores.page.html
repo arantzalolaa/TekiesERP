@@ -142,10 +142,11 @@
 
         <label>
           Tipo suministro
-          <ion-input
-            [(ngModel)]="form.tipo_suministro"
-            placeholder="Componentes electrónicos"
-          ></ion-input>
+          <ion-select [(ngModel)]="form.tipo_suministro" interface="popover">
+            <ion-select-option *ngFor="let tipo of tiposSuministro" [value]="tipo">
+              {{ tipo }}
+            </ion-select-option>
+          </ion-select>
         </label>
 
         <label>
@@ -155,7 +156,11 @@
 
         <label>
           Estado
-          <ion-input [(ngModel)]="form.estado" placeholder="Activo"></ion-input>
+          <ion-select [(ngModel)]="form.estado" interface="popover">
+            <ion-select-option *ngFor="let estado of estados" [value]="estado">
+              {{ estado }}
+            </ion-select-option>
+          </ion-select>
         </label>
       </div>
 
