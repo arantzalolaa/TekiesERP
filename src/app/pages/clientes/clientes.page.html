@@ -147,7 +147,7 @@
         </label>
 
         <label>
-          Estado
+          Estado república
           <ion-input [(ngModel)]="form.estado_republica" placeholder="Sinaloa"></ion-input>
         </label>
 
@@ -163,7 +163,11 @@
 
         <label>
           Estatus
-          <ion-input [(ngModel)]="form.estatus" placeholder="Activo"></ion-input>
+          <ion-select [(ngModel)]="form.estatus" interface="popover">
+            <ion-select-option *ngFor="let estatus of estatusOptions" [value]="estatus">
+              {{ estatus }}
+            </ion-select-option>
+          </ion-select>
         </label>
       </div>
 
