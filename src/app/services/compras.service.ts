@@ -39,6 +39,21 @@ export class ComprasService {
     return data as CompraDetalle[];
   }
 
+  async getById(id: number): Promise<Compra | null> {
+    const { data, error } = await this.supabase
+      .from('compras')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error al cargar compra:', error.message);
+      return null;
+    }
+
+    return data as Compra;
+  }
+
   async getProveedores(): Promise<Proveedor[]> {
     const { data, error } = await this.supabase
       .from('proveedores')
