@@ -136,7 +136,7 @@
             [(ngModel)]="form.inventario_id"
             (ionChange)="onInventarioChange()"
             interface="popover"
-            placeholder="Seleccionar"
+            placeholder="Seleccionar componente"
           >
             <ion-select-option *ngFor="let item of inventario" [value]="item.id">
               {{ item.nombre }} · Stock {{ item.stock }}
@@ -146,7 +146,7 @@
 
         <label>
           Proveedor
-          <ion-select [(ngModel)]="form.proveedor_id" interface="popover" placeholder="Seleccionar">
+          <ion-select [(ngModel)]="form.proveedor_id" interface="popover" placeholder="Seleccionar proveedor">
             <ion-select-option *ngFor="let proveedor of proveedores" [value]="proveedor.id">
               {{ proveedor.nombre }}
             </ion-select-option>
@@ -160,12 +160,12 @@
 
         <label>
           Cantidad
-          <ion-input type="number" [(ngModel)]="form.cantidad"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.cantidad" placeholder="Ej. 10"></ion-input>
         </label>
 
         <label>
           Costo unitario
-          <ion-input type="number" [(ngModel)]="form.costo_unitario"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.costo_unitario" placeholder="Ej. 85"></ion-input>
         </label>
 
         <label>
@@ -188,7 +188,7 @@
 
         <label class="full">
           Notas
-          <ion-textarea [(ngModel)]="form.notas" rows="3" placeholder="Notas de la compra"></ion-textarea>
+          <ion-textarea [(ngModel)]="form.notas" rows="3" placeholder="Ej. Compra de componentes para producción"></ion-textarea>
         </label>
       </div>
 
