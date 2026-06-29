@@ -1,0 +1,12 @@
+@import '../inventario/inventario.page.scss';
+
+.role-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(4, 86, 197, 0.1);
+  color: #0456c5;
+  font-size: 12px;
+  font-weight: 800;
+}

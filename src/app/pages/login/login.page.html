@@ -1,0 +1,72 @@
+<ion-content [fullscreen]="true" class="auth-content">
+  <main class="auth-shell">
+    <section class="brand-panel">
+      <div class="logo-card">
+        <img src="assets/logo-tekies.png" alt="TeKiesTeK ERP" />
+      </div>
+
+      <div>
+        <p class="eyebrow">TeKiesTeK Solutions</p>
+        <h1>ERP para HeliBand</h1>
+        <p class="subtitle">
+          Control ligero de ventas, compras, inventario y finanzas en una sola plataforma.
+        </p>
+      </div>
+
+      <div class="brand-footer">
+        <span>Inventario</span>
+        <span>Ventas</span>
+        <span>Finanzas</span>
+      </div>
+    </section>
+
+    <section class="form-panel">
+      <div class="form-card">
+        <div class="mobile-brand">
+          <ion-icon name="sunny-outline"></ion-icon>
+          <span>TeKiesTeK ERP</span>
+        </div>
+
+        <h2>Iniciar sesión</h2>
+        <p class="form-subtitle">Entra con tu cuenta del equipo.</p>
+
+        <label>Correo</label>
+        <div class="input-box">
+          <ion-icon name="mail-outline"></ion-icon>
+          <ion-input
+            type="email"
+            [(ngModel)]="email"
+            placeholder="arantza@tekiestek.com"
+          ></ion-input>
+        </div>
+
+        <label>Contraseña</label>
+        <div class="input-box">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <ion-input
+            type="password"
+            [(ngModel)]="password"
+            placeholder="••••••••"
+          ></ion-input>
+        </div>
+
+        <ion-button expand="block" class="primary-btn" (click)="login()" [disabled]="loading">
+          <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+          <span *ngIf="!loading">Entrar</span>
+        </ion-button>
+
+        <p class="switch-text">
+          ¿Todavía no tienes cuenta?
+          <a routerLink="/register">Crear cuenta</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <ion-toast
+    [isOpen]="toastOpen"
+    [message]="toastMessage"
+    [duration]="2200"
+    (didDismiss)="toastOpen = false"
+  ></ion-toast>
+</ion-content>

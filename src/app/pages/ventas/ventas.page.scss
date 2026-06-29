@@ -1,0 +1,22 @@
+@import '../inventario/inventario.page.scss';
+
+.preview-total {
+  margin-top: 18px;
+  border-radius: 20px;
+  background: rgba(4, 86, 197, 0.08);
+  color: #0456c5;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preview-total span {
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.preview-total strong {
+  font-size: 22px;
+  letter-spacing: -0.04em;
+}

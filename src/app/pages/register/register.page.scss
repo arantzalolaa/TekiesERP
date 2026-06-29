@@ -1,0 +1,11 @@
+@import '../login/login.page.scss';
+
+.auth-shell {
+  grid-template-columns: 0.95fr 1.05fr;
+}
+
+.brand-panel {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 36%),
+    linear-gradient(145deg, #0a2d63, #0456c5);
+}

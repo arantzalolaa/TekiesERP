@@ -1,3 +1,67 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <div
+    class="app-layout"
+    [class.auth-layout]="!showMenu"
+    [class.sidebar-collapsed]="sidebarCollapsed && showMenu"
+  >
+    <aside class="sidebar" *ngIf="showMenu">
+      <button class="sidebar-toggle" (click)="toggleSidebar()">
+        <ion-icon
+          [name]="sidebarCollapsed ? 'menu-outline' : 'chevron-back-outline'"
+        ></ion-icon>
+      </button>
+
+      <div class="sidebar-brand">
+        <div class="logo-wrap">
+          <img src="assets/logo-tekies.png" alt="TeKiesTeK ERP" />
+        </div>
+
+        <div class="brand-text" *ngIf="!sidebarCollapsed">
+          <p>TeKiesTeK</p>
+          <h2>Solutions</h2>
+        </div>
+      </div>
+
+      <div class="user-card">
+        <div class="avatar">
+          {{ profile?.nombre?.charAt(0) || 'U' }}
+        </div>
+
+        <div class="user-info" *ngIf="!sidebarCollapsed">
+          <strong>{{ profile?.nombre || 'Usuario' }}</strong>
+          <span>{{ getRoleLabel() }}</span>
+        </div>
+      </div>
+
+      <nav class="menu-list">
+        <a
+          *ngFor="let item of menuItems"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+          class="menu-link"
+          [class.hidden]="!canShowItem(item)"
+          [title]="sidebarCollapsed ? item.title : ''"
+        >
+          <ion-icon [name]="item.icon"></ion-icon>
+          <span *ngIf="!sidebarCollapsed">{{ item.title }}</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" (click)="logout()">
+          <ion-icon name="log-out-outline"></ion-icon>
+          <span *ngIf="!sidebarCollapsed">Cerrar sesión</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <button class="floating-menu-btn" *ngIf="showMenu" (click)="toggleSidebar()">
+        <ion-icon name="menu-outline"></ion-icon>
+      </button>
+
+      <ion-router-outlet></ion-router-outlet>
+    </main>
+  </div>
 </ion-app>

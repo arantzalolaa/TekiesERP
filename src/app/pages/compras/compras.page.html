@@ -1,0 +1,211 @@
+<ion-content [fullscreen]="true" class="crud-content">
+  <main class="page-shell">
+    <header class="topbar">
+      <div class="title-box">
+        <a routerLink="/dashboard" class="back-link">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </a>
+
+        <div>
+          <p>Abastecimiento</p>
+          <h1>Compras</h1>
+        </div>
+      </div>
+
+      <ion-button class="primary-btn" (click)="openCreate()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Nueva compra
+      </ion-button>
+    </header>
+
+    <section class="summary-card">
+      <div>
+        <p class="eyebrow">Gastos operativos</p>
+        <h2>{{ compras.length }} registros</h2>
+        <span>Compras de componentes con actualización automática de inventario.</span>
+      </div>
+
+      <div class="search-box">
+        <ion-icon name="search-outline"></ion-icon>
+        <ion-input
+          [(ngModel)]="search"
+          (ionInput)="applyFilter()"
+          placeholder="Buscar compra..."
+        ></ion-input>
+      </div>
+    </section>
+
+    <div *ngIf="loading" class="loading-box">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando compras...</p>
+    </div>
+
+    <section class="table-panel" *ngIf="!loading">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Proveedor</th>
+              <th>Componente</th>
+              <th>SKU</th>
+              <th>Cantidad</th>
+              <th>Costo unitario</th>
+              <th>Total</th>
+              <th>Método</th>
+              <th>Estado</th>
+              <th class="actions-col">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let compra of filteredCompras">
+              <td>{{ compra.fecha }}</td>
+
+              <td>
+                <div class="main-cell">
+                  <strong>{{ compra.proveedor }}</strong>
+                  <span>Proveedor</span>
+                </div>
+              </td>
+
+              <td>
+                <div class="main-cell">
+                  <strong>{{ compra.componente }}</strong>
+                  <span>Inventario</span>
+                </div>
+              </td>
+
+              <td>{{ compra.sku }}</td>
+              <td>{{ compra.cantidad }}</td>
+              <td>{{ formatCurrency(compra.costo_unitario) }}</td>
+              <td>{{ formatCurrency(compra.total) }}</td>
+              <td>{{ compra.metodo_pago || '—' }}</td>
+
+              <td>
+                <span class="status" [class.off]="compra.estado !== 'completada'">
+                  {{ compra.estado }}
+                </span>
+              </td>
+
+              <td>
+                <div class="table-actions">
+                  <button (click)="openEdit(compra)">
+                    <ion-icon name="create-outline"></ion-icon>
+                  </button>
+
+                  <button class="danger" (click)="delete(compra)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="filteredCompras.length === 0">
+              <td colspan="10">
+                <div class="empty-row">No se encontraron compras.</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" *ngIf="showForm">
+    <section class="modal-card">
+      <div class="form-header">
+        <div>
+          <p class="eyebrow">Nueva</p>
+          <h3>Registrar compra</h3>
+        </div>
+
+        <button class="icon-btn" (click)="closeForm()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Componente
+          <ion-select
+            [(ngModel)]="form.inventario_id"
+            (ionChange)="onInventarioChange()"
+            interface="popover"
+            placeholder="Seleccionar"
+          >
+            <ion-select-option *ngFor="let item of inventario" [value]="item.id">
+              {{ item.nombre }} · Stock {{ item.stock }}
+            </ion-select-option>
+          </ion-select>
+        </label>
+
+        <label>
+          Proveedor
+          <ion-select [(ngModel)]="form.proveedor_id" interface="popover" placeholder="Seleccionar">
+            <ion-select-option *ngFor="let proveedor of proveedores" [value]="proveedor.id">
+              {{ proveedor.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </label>
+
+        <label>
+          Fecha
+          <ion-input type="date" [(ngModel)]="form.fecha"></ion-input>
+        </label>
+
+        <label>
+          Cantidad
+          <ion-input type="number" [(ngModel)]="form.cantidad"></ion-input>
+        </label>
+
+        <label>
+          Costo unitario
+          <ion-input type="number" [(ngModel)]="form.costo_unitario"></ion-input>
+        </label>
+
+        <label>
+          Método de pago
+          <ion-input [(ngModel)]="form.metodo_pago" placeholder="Transferencia"></ion-input>
+        </label>
+
+        <label>
+          Estado
+          <ion-select [(ngModel)]="form.estado" interface="popover">
+            <ion-select-option value="pendiente">Pendiente</ion-select-option>
+            <ion-select-option value="completada">Completada</ion-select-option>
+            <ion-select-option value="cancelada">Cancelada</ion-select-option>
+          </ion-select>
+        </label>
+
+        <label class="full">
+          Notas
+          <ion-textarea [(ngModel)]="form.notas" rows="3" placeholder="Notas de la compra"></ion-textarea>
+        </label>
+      </div>
+
+      <div class="preview-total">
+        <span>Total estimado</span>
+        <strong>{{ formatCurrency(getTotalPreview()) }}</strong>
+      </div>
+
+      <div class="modal-actions">
+        <ion-button fill="clear" class="cancel-btn" (click)="closeForm()">
+          Cancelar
+        </ion-button>
+
+        <ion-button class="primary-btn" (click)="save()" [disabled]="saving">
+          <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
+          <span *ngIf="!saving">Guardar</span>
+        </ion-button>
+      </div>
+    </section>
+  </div>
+
+  <ion-toast
+    [isOpen]="toastOpen"
+    [message]="toastMessage"
+    [duration]="2300"
+    (didDismiss)="toastOpen = false"
+  ></ion-toast>
+</ion-content>

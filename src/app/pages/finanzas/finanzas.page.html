@@ -1,0 +1,203 @@
+<ion-content [fullscreen]="true" class="crud-content">
+  <main class="page-shell">
+    <header class="topbar">
+      <div class="title-box">
+        <a routerLink="/dashboard" class="back-link">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </a>
+
+        <div>
+          <p>Contabilidad</p>
+          <h1>Finanzas</h1>
+        </div>
+      </div>
+
+      <ion-button class="primary-btn" (click)="openCreate()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Nuevo movimiento
+      </ion-button>
+    </header>
+
+    <section class="finance-kpis">
+      <article>
+        <span>Ingresos</span>
+        <strong>{{ formatCurrency(getIngresos()) }}</strong>
+      </article>
+
+      <article>
+        <span>Gastos</span>
+        <strong>{{ formatCurrency(getGastos()) }}</strong>
+      </article>
+
+      <article>
+        <span>Flujo neto</span>
+        <strong [class.negative]="getFlujo() < 0">
+          {{ formatCurrency(getFlujo()) }}
+        </strong>
+      </article>
+    </section>
+
+    <section class="summary-card">
+      <div>
+        <p class="eyebrow">Movimientos financieros</p>
+        <h2>{{ movimientos.length }} registros</h2>
+        <span>Ingresos y gastos generados manualmente o desde compras/ventas.</span>
+      </div>
+
+      <div class="search-box">
+        <ion-icon name="search-outline"></ion-icon>
+        <ion-input
+          [(ngModel)]="search"
+          (ionInput)="applyFilter()"
+          placeholder="Buscar movimiento..."
+        ></ion-input>
+      </div>
+    </section>
+
+    <div *ngIf="loading" class="loading-box">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando finanzas...</p>
+    </div>
+
+    <section class="table-panel" *ngIf="!loading">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Tipo</th>
+              <th>Concepto</th>
+              <th>Monto</th>
+              <th>Origen</th>
+              <th>Pagado</th>
+              <th>Notas</th>
+              <th class="actions-col">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let movimiento of filteredMovimientos">
+              <td>{{ movimiento.fecha }}</td>
+
+              <td>
+                <span class="money-pill" [class.expense]="movimiento.tipo === 'gasto'">
+                  {{ movimiento.tipo }}
+                </span>
+              </td>
+
+              <td>
+                <div class="main-cell">
+                  <strong>{{ movimiento.concepto }}</strong>
+                  <span>Ref. {{ movimiento.referencia_id || 'manual' }}</span>
+                </div>
+              </td>
+
+              <td>{{ formatCurrency(movimiento.monto) }}</td>
+              <td>{{ movimiento.modulo_origen || '—' }}</td>
+
+              <td>
+                <span class="status" [class.off]="!movimiento.pagado">
+                  {{ movimiento.pagado ? 'Sí' : 'Pendiente' }}
+                </span>
+              </td>
+
+              <td>{{ movimiento.notas || '—' }}</td>
+
+              <td>
+                <div class="table-actions">
+                  <button (click)="openEdit(movimiento)">
+                    <ion-icon name="create-outline"></ion-icon>
+                  </button>
+
+                  <button class="danger" (click)="delete(movimiento)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="filteredMovimientos.length === 0">
+              <td colspan="8">
+                <div class="empty-row">No se encontraron movimientos.</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" *ngIf="showForm">
+    <section class="modal-card">
+      <div class="form-header">
+        <div>
+          <p class="eyebrow">{{ editingId ? 'Editar' : 'Nuevo' }}</p>
+          <h3>{{ editingId ? 'Actualizar movimiento' : 'Crear movimiento' }}</h3>
+        </div>
+
+        <button class="icon-btn" (click)="closeForm()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Fecha
+          <ion-input type="date" [(ngModel)]="form.fecha"></ion-input>
+        </label>
+
+        <label>
+          Tipo
+          <ion-select [(ngModel)]="form.tipo" interface="popover">
+            <ion-select-option *ngFor="let tipo of tipos" [value]="tipo">
+              {{ tipo }}
+            </ion-select-option>
+          </ion-select>
+        </label>
+
+        <label>
+          Concepto
+          <ion-input [(ngModel)]="form.concepto" placeholder="Publicidad Meta Ads"></ion-input>
+        </label>
+
+        <label>
+          Monto
+          <ion-input type="number" [(ngModel)]="form.monto"></ion-input>
+        </label>
+
+        <label>
+          Origen
+          <ion-input [(ngModel)]="form.modulo_origen" placeholder="finanzas"></ion-input>
+        </label>
+
+        <label class="toggle-label">
+          Pagado
+          <ion-toggle [(ngModel)]="form.pagado"></ion-toggle>
+        </label>
+
+        <label class="full">
+          Notas
+          <ion-textarea [(ngModel)]="form.notas" rows="3" placeholder="Notas del movimiento"></ion-textarea>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <ion-button fill="clear" class="cancel-btn" (click)="closeForm()">
+          Cancelar
+        </ion-button>
+
+        <ion-button class="primary-btn" (click)="save()" [disabled]="saving">
+          <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
+          <span *ngIf="!saving">Guardar</span>
+        </ion-button>
+      </div>
+    </section>
+  </div>
+
+  <ion-toast
+    [isOpen]="toastOpen"
+    [message]="toastMessage"
+    [duration]="2300"
+    (didDismiss)="toastOpen = false"
+  ></ion-toast>
+</ion-content>

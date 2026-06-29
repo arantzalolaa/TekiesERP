@@ -1,0 +1,214 @@
+<ion-content [fullscreen]="true" class="crud-content">
+  <main class="page-shell">
+    <header class="topbar">
+      <div class="title-box">
+        <a routerLink="/dashboard" class="back-link">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </a>
+
+        <div>
+          <p>Almacén</p>
+          <h1>Inventario</h1>
+        </div>
+      </div>
+
+      <ion-button class="primary-btn" (click)="openCreate()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Nuevo componente
+      </ion-button>
+    </header>
+
+    <section class="summary-card">
+      <div>
+        <p class="eyebrow">Componentes y materiales</p>
+        <h2>{{ inventario.length }} registros</h2>
+        <span>Sensores, baterías, PCB, carcasas, correas y empaques.</span>
+      </div>
+
+      <div class="search-box">
+        <ion-icon name="search-outline"></ion-icon>
+        <ion-input
+          [(ngModel)]="search"
+          (ionInput)="applyFilter()"
+          placeholder="Buscar inventario..."
+        ></ion-input>
+      </div>
+    </section>
+
+    <div *ngIf="loading" class="loading-box">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando inventario...</p>
+    </div>
+
+    <section class="table-panel" *ngIf="!loading">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Componente</th>
+              <th>SKU</th>
+              <th>Tipo</th>
+              <th>Categoría</th>
+              <th>Stock</th>
+              <th>Costo</th>
+              <th>Proveedor</th>
+              <th>Estado</th>
+              <th class="actions-col">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let item of filteredInventario">
+              <td>
+                <div class="main-cell">
+                  <strong>{{ item.nombre }}</strong>
+                  <span>{{ item.descripcion || 'Sin descripción' }}</span>
+                </div>
+              </td>
+
+              <td>{{ item.sku }}</td>
+              <td class="capitalize">{{ item.tipo }}</td>
+              <td>{{ item.categoria }}</td>
+
+              <td>
+                <span class="stock-pill" [class.low]="item.stock <= item.stock_minimo">
+                  {{ item.stock }}
+                </span>
+              </td>
+
+              <td>{{ formatCurrency(item.costo_unitario) }}</td>
+              <td>{{ getProveedorName(item.proveedor_id) }}</td>
+
+              <td>
+                <span class="status" [class.off]="!item.activo">
+                  {{ item.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+
+              <td>
+                <div class="table-actions">
+                  <button (click)="openEdit(item)">
+                    <ion-icon name="create-outline"></ion-icon>
+                  </button>
+
+                  <button class="danger" (click)="delete(item)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="filteredInventario.length === 0">
+              <td colspan="9">
+                <div class="empty-row">No se encontraron registros.</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" *ngIf="showForm">
+    <section class="modal-card">
+      <div class="form-header">
+        <div>
+          <p class="eyebrow">{{ editingId ? 'Editar' : 'Nuevo' }}</p>
+          <h3>{{ editingId ? 'Actualizar registro' : 'Crear registro' }}</h3>
+        </div>
+
+        <button class="icon-btn" (click)="closeForm()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Nombre
+          <ion-input [(ngModel)]="form.nombre" placeholder="ESP32-WROOM-32E"></ion-input>
+        </label>
+
+        <label>
+          SKU
+          <ion-input [(ngModel)]="form.sku" placeholder="ESP32-WROOM-32E"></ion-input>
+        </label>
+
+        <label>
+          Tipo
+          <ion-select [(ngModel)]="form.tipo" interface="popover">
+            <ion-select-option *ngFor="let tipo of tipos" [value]="tipo">
+              {{ tipo }}
+            </ion-select-option>
+          </ion-select>
+        </label>
+
+        <label>
+          Categoría
+          <ion-input [(ngModel)]="form.categoria" placeholder="Microcontrolador"></ion-input>
+        </label>
+
+        <label>
+          Unidad
+          <ion-input [(ngModel)]="form.unidad" placeholder="pieza"></ion-input>
+        </label>
+
+        <label>
+          Stock
+          <ion-input type="number" [(ngModel)]="form.stock"></ion-input>
+        </label>
+
+        <label>
+          Stock mínimo
+          <ion-input type="number" [(ngModel)]="form.stock_minimo"></ion-input>
+        </label>
+
+        <label>
+          Costo unitario
+          <ion-input type="number" [(ngModel)]="form.costo_unitario"></ion-input>
+        </label>
+
+        <label>
+          Proveedor
+          <ion-select [(ngModel)]="form.proveedor_id" interface="popover" placeholder="Seleccionar">
+            <ion-select-option [value]="null">Sin proveedor</ion-select-option>
+            <ion-select-option *ngFor="let proveedor of proveedores" [value]="proveedor.id">
+              {{ proveedor.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </label>
+
+        <label class="toggle-label">
+          Activo
+          <ion-toggle [(ngModel)]="form.activo"></ion-toggle>
+        </label>
+
+        <label class="full">
+          Descripción
+          <ion-textarea
+            [(ngModel)]="form.descripcion"
+            placeholder="Descripción breve del componente"
+            rows="3"
+          ></ion-textarea>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <ion-button fill="clear" class="cancel-btn" (click)="closeForm()">
+          Cancelar
+        </ion-button>
+
+        <ion-button class="primary-btn" (click)="save()" [disabled]="saving">
+          <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
+          <span *ngIf="!saving">Guardar</span>
+        </ion-button>
+      </div>
+    </section>
+  </div>
+
+  <ion-toast
+    [isOpen]="toastOpen"
+    [message]="toastMessage"
+    [duration]="2300"
+    (didDismiss)="toastOpen = false"
+  ></ion-toast>
+</ion-content>

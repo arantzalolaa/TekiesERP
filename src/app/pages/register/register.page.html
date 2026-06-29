@@ -1,0 +1,96 @@
+<ion-content [fullscreen]="true" class="auth-content">
+  <main class="auth-shell">
+    <section class="form-panel">
+      <div class="form-card">
+        <div class="mobile-brand">
+          <ion-icon name="sunny-outline"></ion-icon>
+          <span>TeKiesTeK ERP</span>
+        </div>
+
+        <h2>Crear cuenta</h2>
+        <p class="form-subtitle">
+          Registra un usuario para acceder al sistema.
+        </p>
+
+        <label>Nombre</label>
+        <div class="input-box">
+          <ion-icon name="person-outline"></ion-icon>
+          <ion-input
+            type="text"
+            [(ngModel)]="nombre"
+            placeholder="Arantza Lizárraga"
+          ></ion-input>
+        </div>
+
+        <label>Correo</label>
+        <div class="input-box">
+          <ion-icon name="mail-outline"></ion-icon>
+          <ion-input
+            type="email"
+            [(ngModel)]="email"
+            placeholder="arantza@tekiestek.com"
+          ></ion-input>
+        </div>
+
+        <label>Contraseña</label>
+        <div class="input-box">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <ion-input
+            type="password"
+            [(ngModel)]="password"
+            placeholder="Mínimo 6 caracteres"
+          ></ion-input>
+        </div>
+
+        <label>Confirmar contraseña</label>
+        <div class="input-box">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <ion-input
+            type="password"
+            [(ngModel)]="confirmPassword"
+            placeholder="Repite tu contraseña"
+          ></ion-input>
+        </div>
+
+        <ion-button expand="block" class="primary-btn" (click)="register()" [disabled]="loading">
+          <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+          <span *ngIf="!loading">Crear cuenta</span>
+        </ion-button>
+
+        <p class="switch-text">
+          ¿Ya tienes cuenta?
+          <a routerLink="/login">Iniciar sesión</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="brand-panel">
+      <div class="logo-card">
+        <img src="assets/logo-tekies.png" alt="TeKiesTeK ERP" />
+      </div>
+
+      <div>
+        <p class="eyebrow">Acceso seguro</p>
+        <h1>Roles por área</h1>
+        <p class="subtitle">
+          Cada integrante puede trabajar según su módulo: ventas, compras, inventario,
+          finanzas o administración.
+        </p>
+      </div>
+
+      <div class="brand-footer">
+        <span>Admin</span>
+        <span>Ventas</span>
+        <span>Compras</span>
+        <span>Finanzas</span>
+      </div>
+    </section>
+  </main>
+
+  <ion-toast
+    [isOpen]="toastOpen"
+    [message]="toastMessage"
+    [duration]="2200"
+    (didDismiss)="toastOpen = false"
+  ></ion-toast>
+</ion-content>

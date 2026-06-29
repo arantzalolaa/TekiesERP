@@ -1,0 +1,160 @@
+<ion-content [fullscreen]="true" class="crud-content">
+  <main class="page-shell">
+    <header class="topbar">
+      <div class="title-box">
+        <a routerLink="/dashboard" class="back-link">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </a>
+
+        <div>
+          <p>Administración</p>
+          <h1>Usuarios y roles</h1>
+        </div>
+      </div>
+    </header>
+
+    <section class="summary-card">
+      <div>
+        <p class="eyebrow">Control de acceso</p>
+        <h2>{{ usuarios.length }} registros</h2>
+        <span>Administra roles, áreas y estado de los integrantes del ERP.</span>
+      </div>
+
+      <div class="search-box">
+        <ion-icon name="search-outline"></ion-icon>
+        <ion-input
+          [(ngModel)]="search"
+          (ionInput)="applyFilter()"
+          placeholder="Buscar usuario..."
+        ></ion-input>
+      </div>
+    </section>
+
+    <div *ngIf="loading" class="loading-box">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando usuarios...</p>
+    </div>
+
+    <section class="table-panel" *ngIf="!loading">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Correo</th>
+              <th>Rol</th>
+              <th>Área</th>
+              <th>Estado</th>
+              <th class="actions-col">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let usuario of filteredUsuarios">
+              <td>
+                <div class="main-cell">
+                  <strong>{{ usuario.nombre }}</strong>
+                  <span>{{ usuario.id }}</span>
+                </div>
+              </td>
+
+              <td>{{ usuario.correo }}</td>
+
+              <td>
+                <span class="role-pill">
+                  {{ getRoleLabel(usuario.rol) }}
+                </span>
+              </td>
+
+              <td>{{ usuario.area || 'Sin asignar' }}</td>
+
+              <td>
+                <span class="status" [class.off]="!usuario.activo">
+                  {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+
+              <td>
+                <div class="table-actions">
+                  <button (click)="openEdit(usuario)">
+                    <ion-icon name="create-outline"></ion-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="filteredUsuarios.length === 0">
+              <td colspan="6">
+                <div class="empty-row">No se encontraron usuarios.</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" *ngIf="showForm">
+    <section class="modal-card">
+      <div class="form-header">
+        <div>
+          <p class="eyebrow">Editar</p>
+          <h3>Actualizar usuario</h3>
+        </div>
+
+        <button class="icon-btn" (click)="closeForm()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Nombre
+          <ion-input [(ngModel)]="form.nombre" placeholder="Nombre completo"></ion-input>
+        </label>
+
+        <label>
+          Correo
+          <ion-input [(ngModel)]="form.correo" disabled="true"></ion-input>
+        </label>
+
+        <label>
+          Rol
+          <ion-select [(ngModel)]="form.rol" interface="popover">
+            <ion-select-option *ngFor="let rol of roles" [value]="rol">
+              {{ getRoleLabel(rol) }}
+            </ion-select-option>
+          </ion-select>
+        </label>
+
+        <label>
+          Área
+          <ion-input [(ngModel)]="form.area" placeholder="Ventas / Compras / Finanzas"></ion-input>
+        </label>
+
+        <label class="toggle-label">
+          Activo
+          <ion-toggle [(ngModel)]="form.activo"></ion-toggle>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <ion-button fill="clear" class="cancel-btn" (click)="closeForm()">
+          Cancelar
+        </ion-button>
+
+        <ion-button class="primary-btn" (click)="save()" [disabled]="saving">
+          <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
+          <span *ngIf="!saving">Guardar</span>
+        </ion-button>
+      </div>
+    </section>
+  </div>
+
+  <ion-toast
+    [isOpen]="toastOpen"
+    [message]="toastMessage"
+    [duration]="2300"
+    (didDismiss)="toastOpen = false"
+  ></ion-toast>
+</ion-content>

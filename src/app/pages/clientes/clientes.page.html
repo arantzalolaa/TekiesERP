@@ -1,0 +1,189 @@
+<ion-content [fullscreen]="true" class="crud-content">
+  <main class="page-shell">
+    <header class="topbar">
+      <div class="title-box">
+        <a routerLink="/dashboard" class="back-link">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </a>
+
+        <div>
+          <p>Comercial</p>
+          <h1>Clientes</h1>
+        </div>
+      </div>
+
+      <ion-button class="primary-btn" (click)="openCreate()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Nuevo cliente
+      </ion-button>
+    </header>
+
+    <section class="summary-card">
+      <div>
+        <p class="eyebrow">Cartera comercial</p>
+        <h2>{{ clientes.length }} registros</h2>
+        <span>Clientes finales, empresas y distribuidores.</span>
+      </div>
+
+      <div class="search-box">
+        <ion-icon name="search-outline"></ion-icon>
+        <ion-input
+          [(ngModel)]="search"
+          (ionInput)="applyFilter()"
+          placeholder="Buscar cliente..."
+        ></ion-input>
+      </div>
+    </section>
+
+    <div *ngIf="loading" class="loading-box">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando clientes...</p>
+    </div>
+
+    <section class="table-panel" *ngIf="!loading">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Tipo</th>
+              <th>Correo</th>
+              <th>Teléfono</th>
+              <th>Ciudad</th>
+              <th>Límite crédito</th>
+              <th>Saldo</th>
+              <th>Estado</th>
+              <th class="actions-col">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let cliente of filteredClientes">
+              <td>
+                <div class="main-cell">
+                  <strong>{{ cliente.nombre }}</strong>
+                  <span>{{ cliente.estado_republica || 'Sin estado registrado' }}</span>
+                </div>
+              </td>
+
+              <td class="capitalize">{{ cliente.tipo }}</td>
+              <td>{{ cliente.correo || '—' }}</td>
+              <td>{{ cliente.telefono || '—' }}</td>
+              <td>{{ cliente.ciudad || '—' }}</td>
+              <td>{{ formatCurrency(cliente.limite_credito) }}</td>
+              <td>{{ formatCurrency(cliente.saldo_pendiente) }}</td>
+
+              <td>
+                <span class="status" [class.off]="cliente.estatus !== 'Activo'">
+                  {{ cliente.estatus }}
+                </span>
+              </td>
+
+              <td>
+                <div class="table-actions">
+                  <button (click)="openEdit(cliente)">
+                    <ion-icon name="create-outline"></ion-icon>
+                  </button>
+
+                  <button class="danger" (click)="delete(cliente)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="filteredClientes.length === 0">
+              <td colspan="9">
+                <div class="empty-row">No se encontraron clientes.</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" *ngIf="showForm">
+    <section class="modal-card">
+      <div class="form-header">
+        <div>
+          <p class="eyebrow">{{ editingId ? 'Editar' : 'Nuevo' }}</p>
+          <h3>{{ editingId ? 'Actualizar cliente' : 'Crear cliente' }}</h3>
+        </div>
+
+        <button class="icon-btn" (click)="closeForm()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Nombre
+          <ion-input [(ngModel)]="form.nombre" placeholder="Dermacenter Mazatlán"></ion-input>
+        </label>
+
+        <label>
+          Tipo
+          <ion-select [(ngModel)]="form.tipo" interface="popover">
+            <ion-select-option *ngFor="let tipo of tipos" [value]="tipo">
+              {{ tipo }}
+            </ion-select-option>
+          </ion-select>
+        </label>
+
+        <label>
+          Correo
+          <ion-input type="email" [(ngModel)]="form.correo" placeholder="cliente@email.com"></ion-input>
+        </label>
+
+        <label>
+          Teléfono
+          <ion-input [(ngModel)]="form.telefono" placeholder="6690000000"></ion-input>
+        </label>
+
+        <label>
+          Ciudad
+          <ion-input [(ngModel)]="form.ciudad" placeholder="Mazatlán"></ion-input>
+        </label>
+
+        <label>
+          Estado
+          <ion-input [(ngModel)]="form.estado_republica" placeholder="Sinaloa"></ion-input>
+        </label>
+
+        <label>
+          Límite crédito
+          <ion-input type="number" [(ngModel)]="form.limite_credito"></ion-input>
+        </label>
+
+        <label>
+          Saldo pendiente
+          <ion-input type="number" [(ngModel)]="form.saldo_pendiente"></ion-input>
+        </label>
+
+        <label>
+          Estatus
+          <ion-input [(ngModel)]="form.estatus" placeholder="Activo"></ion-input>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <ion-button fill="clear" class="cancel-btn" (click)="closeForm()">
+          Cancelar
+        </ion-button>
+
+        <ion-button class="primary-btn" (click)="save()" [disabled]="saving">
+          <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
+          <span *ngIf="!saving">Guardar</span>
+        </ion-button>
+      </div>
+    </section>
+  </div>
+
+  <ion-toast
+    [isOpen]="toastOpen"
+    [message]="toastMessage"
+    [duration]="2300"
+    (didDismiss)="toastOpen = false"
+  ></ion-toast>
+</ion-content>

@@ -1,0 +1,181 @@
+<ion-content [fullscreen]="true" class="crud-content">
+  <main class="page-shell">
+    <header class="topbar">
+      <div class="title-box">
+        <a routerLink="/dashboard" class="back-link">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </a>
+
+        <div>
+          <p>Compras</p>
+          <h1>Proveedores</h1>
+        </div>
+      </div>
+
+      <ion-button class="primary-btn" (click)="openCreate()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Nuevo proveedor
+      </ion-button>
+    </header>
+
+    <section class="summary-card">
+      <div>
+        <p class="eyebrow">Suministro</p>
+        <h2>{{ proveedores.length }} registros</h2>
+        <span>Marcas, distribuidores y servicios para la operación.</span>
+      </div>
+
+      <div class="search-box">
+        <ion-icon name="search-outline"></ion-icon>
+        <ion-input
+          [(ngModel)]="search"
+          (ionInput)="applyFilter()"
+          placeholder="Buscar proveedor..."
+        ></ion-input>
+      </div>
+    </section>
+
+    <div *ngIf="loading" class="loading-box">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando proveedores...</p>
+    </div>
+
+    <section class="table-panel" *ngIf="!loading">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Proveedor</th>
+              <th>Contacto</th>
+              <th>Correo</th>
+              <th>Teléfono</th>
+              <th>Tipo suministro</th>
+              <th>País</th>
+              <th>Estado</th>
+              <th class="actions-col">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let proveedor of filteredProveedores">
+              <td>
+                <div class="main-cell">
+                  <strong>{{ proveedor.nombre }}</strong>
+                  <span>{{ proveedor.sitio_web || 'Sin sitio web' }}</span>
+                </div>
+              </td>
+
+              <td>{{ proveedor.contacto || '—' }}</td>
+              <td>{{ proveedor.correo || '—' }}</td>
+              <td>{{ proveedor.telefono || '—' }}</td>
+              <td>{{ proveedor.tipo_suministro }}</td>
+              <td>{{ proveedor.pais || '—' }}</td>
+
+              <td>
+                <span class="status" [class.off]="proveedor.estado !== 'Activo'">
+                  {{ proveedor.estado }}
+                </span>
+              </td>
+
+              <td>
+                <div class="table-actions">
+                  <button (click)="openEdit(proveedor)">
+                    <ion-icon name="create-outline"></ion-icon>
+                  </button>
+
+                  <button class="danger" (click)="delete(proveedor)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="filteredProveedores.length === 0">
+              <td colspan="8">
+                <div class="empty-row">No se encontraron proveedores.</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" *ngIf="showForm">
+    <section class="modal-card">
+      <div class="form-header">
+        <div>
+          <p class="eyebrow">{{ editingId ? 'Editar' : 'Nuevo' }}</p>
+          <h3>{{ editingId ? 'Actualizar proveedor' : 'Crear proveedor' }}</h3>
+        </div>
+
+        <button class="icon-btn" (click)="closeForm()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Nombre
+          <ion-input [(ngModel)]="form.nombre" placeholder="Espressif Systems"></ion-input>
+        </label>
+
+        <label>
+          Contacto
+          <ion-input [(ngModel)]="form.contacto" placeholder="Área de ventas"></ion-input>
+        </label>
+
+        <label>
+          Correo
+          <ion-input type="email" [(ngModel)]="form.correo" placeholder="ventas@empresa.com"></ion-input>
+        </label>
+
+        <label>
+          Teléfono
+          <ion-input [(ngModel)]="form.telefono" placeholder="+52 669 000 0000"></ion-input>
+        </label>
+
+        <label>
+          Sitio web
+          <ion-input [(ngModel)]="form.sitio_web" placeholder="https://empresa.com"></ion-input>
+        </label>
+
+        <label>
+          Tipo suministro
+          <ion-input
+            [(ngModel)]="form.tipo_suministro"
+            placeholder="Componentes electrónicos"
+          ></ion-input>
+        </label>
+
+        <label>
+          País
+          <ion-input [(ngModel)]="form.pais" placeholder="México"></ion-input>
+        </label>
+
+        <label>
+          Estado
+          <ion-input [(ngModel)]="form.estado" placeholder="Activo"></ion-input>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <ion-button fill="clear" class="cancel-btn" (click)="closeForm()">
+          Cancelar
+        </ion-button>
+
+        <ion-button class="primary-btn" (click)="save()" [disabled]="saving">
+          <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
+          <span *ngIf="!saving">Guardar</span>
+        </ion-button>
+      </div>
+    </section>
+  </div>
+
+  <ion-toast
+    [isOpen]="toastOpen"
+    [message]="toastMessage"
+    [duration]="2300"
+    (didDismiss)="toastOpen = false"
+  ></ion-toast>
+</ion-content>

@@ -1,0 +1,221 @@
+<ion-content [fullscreen]="true" class="crud-content">
+  <main class="page-shell">
+    <header class="topbar">
+      <div class="title-box">
+        <a routerLink="/dashboard" class="back-link">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </a>
+
+        <div>
+          <p>Comercial</p>
+          <h1>Ventas</h1>
+        </div>
+      </div>
+
+      <ion-button class="primary-btn" (click)="openCreate()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Nueva venta
+      </ion-button>
+    </header>
+
+    <section class="summary-card">
+      <div>
+        <p class="eyebrow">Ingresos</p>
+        <h2>{{ ventas.length }} registros</h2>
+        <span>Ventas de productos HeliBand con actualización automática de stock.</span>
+      </div>
+
+      <div class="search-box">
+        <ion-icon name="search-outline"></ion-icon>
+        <ion-input
+          [(ngModel)]="search"
+          (ionInput)="applyFilter()"
+          placeholder="Buscar venta..."
+        ></ion-input>
+      </div>
+    </section>
+
+    <div *ngIf="loading" class="loading-box">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando ventas...</p>
+    </div>
+
+    <section class="table-panel" *ngIf="!loading">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Cliente</th>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Precio</th>
+              <th>Total</th>
+              <th>Utilidad</th>
+              <th>Pago</th>
+              <th>Estado</th>
+              <th class="actions-col">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let venta of filteredVentas">
+              <td>{{ venta.fecha }}</td>
+
+              <td>
+                <div class="main-cell">
+                  <strong>{{ venta.cliente }}</strong>
+                  <span>{{ venta.tipo_cliente }}</span>
+                </div>
+              </td>
+
+              <td>
+                <div class="main-cell">
+                  <strong>{{ venta.producto }}</strong>
+                  <span>{{ venta.sku }}</span>
+                </div>
+              </td>
+
+              <td>{{ venta.cantidad }}</td>
+              <td>{{ formatCurrency(venta.precio_unitario) }}</td>
+              <td>{{ formatCurrency(venta.total) }}</td>
+              <td>{{ formatCurrency(venta.utilidad) }}</td>
+
+              <td>
+                <span class="status" [class.off]="!venta.pagada">
+                  {{ venta.pagada ? 'Pagada' : 'Crédito' }}
+                </span>
+              </td>
+
+              <td>
+                <span class="status">
+                  {{ venta.estado }}
+                </span>
+              </td>
+
+              <td>
+                <div class="table-actions">
+                  <button (click)="openEdit(venta)">
+                    <ion-icon name="create-outline"></ion-icon>
+                  </button>
+
+                  <button class="danger" (click)="delete(venta)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="filteredVentas.length === 0">
+              <td colspan="10">
+                <div class="empty-row">No se encontraron ventas.</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" *ngIf="showForm">
+    <section class="modal-card">
+      <div class="form-header">
+        <div>
+          <p class="eyebrow">Nueva</p>
+          <h3>Registrar venta</h3>
+        </div>
+
+        <button class="icon-btn" (click)="closeForm()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Cliente
+          <ion-select [(ngModel)]="form.cliente_id" interface="popover" placeholder="Seleccionar">
+            <ion-select-option *ngFor="let cliente of clientes" [value]="cliente.id">
+              {{ cliente.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </label>
+
+        <label>
+          Producto
+          <ion-select
+            [(ngModel)]="form.producto_id"
+            (ionChange)="onProductoChange()"
+            interface="popover"
+            placeholder="Seleccionar"
+          >
+            <ion-select-option *ngFor="let producto of productos" [value]="producto.id">
+              {{ producto.nombre }} · Stock {{ producto.stock }}
+            </ion-select-option>
+          </ion-select>
+        </label>
+
+        <label>
+          Fecha
+          <ion-input type="date" [(ngModel)]="form.fecha"></ion-input>
+        </label>
+
+        <label>
+          Cantidad
+          <ion-input type="number" [(ngModel)]="form.cantidad"></ion-input>
+        </label>
+
+        <label>
+          Precio unitario
+          <ion-input type="number" [(ngModel)]="form.precio_unitario"></ion-input>
+        </label>
+
+        <label>
+          Método de pago
+          <ion-input [(ngModel)]="form.metodo_pago" placeholder="Tarjeta"></ion-input>
+        </label>
+
+        <label>
+          Estado
+          <ion-select [(ngModel)]="form.estado" interface="popover">
+            <ion-select-option value="pendiente">Pendiente</ion-select-option>
+            <ion-select-option value="completada">Completada</ion-select-option>
+            <ion-select-option value="cancelada">Cancelada</ion-select-option>
+          </ion-select>
+        </label>
+
+        <label class="toggle-label">
+          Pagada
+          <ion-toggle [(ngModel)]="form.pagada"></ion-toggle>
+        </label>
+
+        <label class="full">
+          Notas
+          <ion-textarea [(ngModel)]="form.notas" rows="3" placeholder="Notas de la venta"></ion-textarea>
+        </label>
+      </div>
+
+      <div class="preview-total">
+        <span>Total estimado</span>
+        <strong>{{ formatCurrency(getTotalPreview()) }}</strong>
+      </div>
+
+      <div class="modal-actions">
+        <ion-button fill="clear" class="cancel-btn" (click)="closeForm()">
+          Cancelar
+        </ion-button>
+
+        <ion-button class="primary-btn" (click)="save()" [disabled]="saving">
+          <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
+          <span *ngIf="!saving">Guardar</span>
+        </ion-button>
+      </div>
+    </section>
+  </div>
+
+  <ion-toast
+    [isOpen]="toastOpen"
+    [message]="toastMessage"
+    [duration]="2300"
+    (didDismiss)="toastOpen = false"
+  ></ion-toast>
+</ion-content>

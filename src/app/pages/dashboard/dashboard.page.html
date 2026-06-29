@@ -1,0 +1,172 @@
+<ion-content [fullscreen]="true" class="dashboard-content">
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <main class="page-shell">
+    <header class="topbar">
+      <div class="brand">
+        <img src="assets/logo-tekies.png" alt="TeKiesTeK" />
+        <div>
+          <p>TeKiesTeK ERP</p>
+          <h1>Dashboard</h1>
+        </div>
+      </div>
+
+      <div class="user-box">
+        <div>
+          <strong>{{ profile?.nombre || 'Usuario' }}</strong>
+          <span>{{ getRoleLabel() }}</span>
+        </div>
+
+        <ion-button fill="clear" class="logout-btn" (click)="logout()">
+          <ion-icon name="log-out-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </header>
+
+    <section class="hero-card">
+      <div>
+        <p class="eyebrow">Resumen general</p>
+        <h2>Operación HeliBand</h2>
+        <p>
+          Vista rápida de ventas, compras, utilidad, flujo financiero y alertas de stock.
+        </p>
+      </div>
+
+      <button class="refresh-btn" (click)="loadData()">
+        <ion-icon name="refresh-outline"></ion-icon>
+        Actualizar
+      </button>
+    </section>
+
+    <div *ngIf="loading" class="loading-box">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando información...</p>
+    </div>
+
+    <ng-container *ngIf="!loading">
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="icon-bubble">
+            <ion-icon name="trending-up-outline"></ion-icon>
+          </div>
+          <span>Ventas totales</span>
+          <strong>{{ formatCurrency(resumen?.ventas_totales) }}</strong>
+        </article>
+
+        <article class="kpi-card">
+          <div class="icon-bubble">
+            <ion-icon name="analytics-outline"></ion-icon>
+          </div>
+          <span>Utilidad</span>
+          <strong>{{ formatCurrency(resumen?.utilidad_total) }}</strong>
+        </article>
+
+        <article class="kpi-card">
+          <div class="icon-bubble">
+            <ion-icon name="cash-outline"></ion-icon>
+          </div>
+          <span>Ingresos</span>
+          <strong>{{ formatCurrency(resumen?.ingresos) }}</strong>
+        </article>
+
+        <article class="kpi-card">
+          <div class="icon-bubble danger">
+            <ion-icon name="card-outline"></ion-icon>
+          </div>
+          <span>Gastos</span>
+          <strong>{{ formatCurrency(resumen?.gastos) }}</strong>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Módulos</p>
+              <h3>Accesos rápidos</h3>
+            </div>
+          </div>
+
+          <div class="module-grid">
+            <button
+              class="module-card"
+              *ngFor="let module of modules"
+              (click)="goTo(module.route)"
+            >
+              <ion-icon [name]="module.icon"></ion-icon>
+              <div>
+                <strong>{{ module.title }}</strong>
+                <span>{{ module.subtitle }}</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <aside class="panel stock-panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Alertas</p>
+              <h3>Stock bajo</h3>
+            </div>
+
+            <div class="alert-count">
+              {{ (resumen?.productos_stock_bajo || 0) + (resumen?.componentes_stock_bajo || 0) }}
+            </div>
+          </div>
+
+          <div *ngIf="stockBajo.length === 0" class="empty-state">
+            <ion-icon name="cube-outline"></ion-icon>
+            <p>Todo el inventario está estable.</p>
+          </div>
+
+          <div class="stock-list" *ngIf="stockBajo.length > 0">
+            <article class="stock-item" *ngFor="let item of stockBajo">
+              <div class="stock-icon">
+                <ion-icon name="warning-outline"></ion-icon>
+              </div>
+
+              <div class="stock-info">
+                <strong>{{ item.nombre }}</strong>
+                <span>{{ item.origen }} · {{ item.sku }}</span>
+              </div>
+
+              <div class="stock-number">
+                {{ item.stock }}
+                <small>/ {{ item.stock_minimo }}</small>
+              </div>
+            </article>
+          </div>
+        </aside>
+      </section>
+
+      <section class="mini-stats">
+        <article>
+          <span>Ventas</span>
+          <strong>{{ resumen?.total_ventas || 0 }}</strong>
+        </article>
+
+        <article>
+          <span>Compras</span>
+          <strong>{{ resumen?.total_compras || 0 }}</strong>
+        </article>
+
+        <article>
+          <span>Clientes</span>
+          <strong>{{ resumen?.total_clientes || 0 }}</strong>
+        </article>
+
+        <article>
+          <span>Proveedores</span>
+          <strong>{{ resumen?.total_proveedores || 0 }}</strong>
+        </article>
+
+        <article>
+          <span>Flujo neto</span>
+          <strong>{{ formatCurrency(resumen?.flujo_neto) }}</strong>
+        </article>
+      </section>
+    </ng-container>
+  </main>
+</ion-content>
