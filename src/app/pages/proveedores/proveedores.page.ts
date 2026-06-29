@@ -7,6 +7,8 @@ import {
   IonIcon,
   IonButton,
   IonInput,
+  IonSelect,
+  IonSelectOption,
   IonSpinner,
   IonToast, IonHeader, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -28,7 +30,7 @@ import { Proveedor } from '../../models/database.models';
   templateUrl: './proveedores.page.html',
   styleUrls: ['./proveedores.page.scss'],
   standalone: true,
-  imports: [IonToolbar, IonHeader, 
+  imports: [IonToolbar, IonHeader,
     CommonModule,
     FormsModule,
     RouterModule,
@@ -36,6 +38,8 @@ import { Proveedor } from '../../models/database.models';
     IonIcon,
     IonButton,
     IonInput,
+    IonSelect,
+    IonSelectOption,
     IonSpinner,
     IonToast,
   ],
@@ -43,6 +47,16 @@ import { Proveedor } from '../../models/database.models';
 export class ProveedoresPage implements OnInit {
   proveedores: Proveedor[] = [];
   filteredProveedores: Proveedor[] = [];
+
+  estados = ['Activo', 'Inactivo', 'Suspendido'];
+  tiposSuministro = [
+    'Componentes electrónicos',
+    'Sensores UV',
+    'Baterías',
+    'Carcasas y correas',
+    'Empaque',
+    'Servicios',
+  ];
 
   loading = true;
   saving = false;
@@ -79,7 +93,7 @@ export class ProveedoresPage implements OnInit {
       telefono: '',
       correo: '',
       sitio_web: '',
-      tipo_suministro: '',
+      tipo_suministro: 'Componentes electrónicos',
       pais: 'México',
       estado: 'Activo',
     };
@@ -108,6 +122,7 @@ export class ProveedoresPage implements OnInit {
         proveedor.telefono || '',
         proveedor.tipo_suministro,
         proveedor.pais || '',
+        proveedor.estado || '',
       ]
         .join(' ')
         .toLowerCase()
@@ -145,9 +160,9 @@ export class ProveedoresPage implements OnInit {
       telefono: this.form.telefono?.trim() || null,
       correo: this.form.correo?.trim() || null,
       sitio_web: this.form.sitio_web?.trim() || null,
-      tipo_suministro: this.form.tipo_suministro.trim(),
+      tipo_suministro: this.form.tipo_suministro,
       pais: this.form.pais?.trim() || 'México',
-      estado: this.form.estado?.trim() || 'Activo',
+      estado: this.form.estado || 'Activo',
     };
 
     this.saving = true;
