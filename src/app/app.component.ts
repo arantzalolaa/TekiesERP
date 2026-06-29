@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import {
   IonApp,
-  IonRouterOutlet,
   IonIcon,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -42,14 +41,13 @@ interface MenuItem {
     CommonModule,
     RouterModule,
     IonApp,
-    IonRouterOutlet,
     IonIcon,
   ],
 })
 export class AppComponent implements OnInit {
   profile: Profile | null = null;
   showMenu = false;
-  sidebarCollapsed = false;
+  sidebarClosed = false;
 
   menuItems: MenuItem[] = [
     {
@@ -128,8 +126,8 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const savedState = localStorage.getItem('tekies_sidebar_collapsed');
-    this.sidebarCollapsed = savedState === 'true';
+    const savedState = localStorage.getItem('tekies_sidebar_closed');
+    this.sidebarClosed = savedState === 'true';
 
     await this.refreshShell();
 
@@ -164,11 +162,8 @@ export class AppComponent implements OnInit {
   }
 
   toggleSidebar() {
-    this.sidebarCollapsed = !this.sidebarCollapsed;
-    localStorage.setItem(
-      'tekies_sidebar_collapsed',
-      String(this.sidebarCollapsed)
-    );
+    this.sidebarClosed = !this.sidebarClosed;
+    localStorage.setItem('tekies_sidebar_closed', String(this.sidebarClosed));
   }
 
   canShowItem(item: MenuItem): boolean {
