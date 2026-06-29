@@ -1,0 +1,7 @@
+{
+  "name": "tekiestek-erp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
