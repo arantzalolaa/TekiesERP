@@ -1,90 +1,132 @@
 /*
- * TeKiesTeK ERP - Global Theme
- * Pastel, clean, Apple-like UI
+ * TeKiesTeK ERP — Global Design System v2
+ * Apple-minimalist · Pastel precision · ERP-grade
  */
 
+/* ─── Design Tokens ─────────────────────────────── */
 :root {
-  --tk-primary: #74cfe0;
-  --tk-primary-dark: #5ab7d1;
-  --tk-secondary: #7fb7e8;
-  --tk-periwinkle: #8fa2e6;
-  --tk-lavender: #b6a5e8;
-  --tk-lilac: #c8b5ea;
-  --tk-pink: #e7b3d6;
+  /* Brand palette (from UI spec) */
+  --tk-primary:       #74CFE0;
+  --tk-primary-dark:  #5AB7D1;
+  --tk-secondary:     #7FB7E8;
+  --tk-periwinkle:    #8FA2E6;
+  --tk-lavender:      #B6A5E8;
+  --tk-lilac:         #C8B5EA;
+  --tk-pink:          #E7B3D6;
 
-  --tk-bg: #f8fafc;
-  --tk-bg-alt: #f2f6fb;
-  --tk-card: #ffffff;
-  --tk-border: #dde7f2;
+  /* Surfaces */
+  --tk-bg:            #F8FAFC;
+  --tk-bg-alt:        #F2F6FB;
+  --tk-card:          #FFFFFF;
+  --tk-card-hover:    #FAFCFF;
+  --tk-border:        #DDE7F2;
+  --tk-border-light:  #EEF3F8;
 
-  --tk-text: #3e4a5e;
-  --tk-muted: #6f7d90;
-  --tk-placeholder: #a6b2c2;
+  /* Typography */
+  --tk-text:          #1E293B;
+  --tk-text-2:        #475569;
+  --tk-muted:         #64748B;
+  --tk-placeholder:   #94A3B8;
 
-  --tk-success: #7fd3b2;
-  --tk-warning: #f2c98a;
-  --tk-error: #e8a3a8;
-  --tk-info: #8fc9f2;
+  /* System states */
+  --tk-success:       #10B981;
+  --tk-success-bg:    rgba(16, 185, 129, 0.10);
+  --tk-warning:       #F59E0B;
+  --tk-warning-bg:    rgba(245, 158, 11, 0.12);
+  --tk-error:         #EF4444;
+  --tk-error-bg:      rgba(239, 68, 68, 0.10);
+  --tk-info:          #3B82F6;
+  --tk-info-bg:       rgba(59, 130, 246, 0.10);
 
-  --tk-shadow-sm: 0 8px 20px rgba(62, 74, 94, 0.06);
-  --tk-shadow-md: 0 14px 38px rgba(62, 74, 94, 0.09);
-  --tk-shadow-lg: 0 24px 70px rgba(62, 74, 94, 0.14);
+  /* Elevation */
+  --tk-shadow-xs:  0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --tk-shadow-sm:  0 4px 12px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.04);
+  --tk-shadow-md:  0 8px 24px rgba(15, 23, 42, 0.08), 0 4px 8px rgba(15, 23, 42, 0.04);
+  --tk-shadow-lg:  0 20px 48px rgba(15, 23, 42, 0.10), 0 8px 16px rgba(15, 23, 42, 0.04);
+  --tk-shadow-xl:  0 32px 80px rgba(15, 23, 42, 0.14), 0 16px 24px rgba(15, 23, 42, 0.06);
 
-  --ion-font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --ion-background-color: var(--tk-bg);
-  --ion-text-color: var(--tk-text);
-  --ion-color-primary: var(--tk-primary);
+  /* Radii */
+  --tk-r-xs:  6px;
+  --tk-r-sm:  10px;
+  --tk-r-md:  14px;
+  --tk-r-lg:  20px;
+  --tk-r-xl:  28px;
+  --tk-r-2xl: 36px;
+  --tk-r-pill: 999px;
+
+  /* Sidebar */
+  --sidebar-w: 268px;
+
+  /* Ionic overrides */
+  --ion-font-family:       'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ion-background-color:  var(--tk-bg);
+  --ion-text-color:        var(--tk-text);
+  --ion-color-primary:     var(--tk-primary);
 }
 
-html,
-body {
+/* ─── Reset & Base ──────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
   min-height: 100%;
   background: var(--tk-bg);
   color: var(--tk-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-body {
-  margin: 0;
-}
-
-ion-app {
-  background: var(--tk-bg);
-}
-
-ion-content {
-  --background: var(--tk-bg);
-}
-
-ion-input,
-ion-select,
-ion-textarea {
+/* ─── Typography scale ──────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
   color: var(--tk-text);
 }
 
+body, p, span, a, label, td, th, input, select, textarea, button {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Display numerics with tabular figures */
+.tk-num, strong, b, [data-num] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* ─── Ionic overrides ───────────────────────────── */
+ion-app    { background: var(--tk-bg); }
+ion-content { --background: var(--tk-bg); }
 ion-button {
   text-transform: none;
   letter-spacing: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
 }
+ion-input, ion-select, ion-textarea { color: var(--tk-text); }
 
-* {
-  box-sizing: border-box;
-}
-
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #eef3f8;
-}
-
+/* ─── Scrollbar ─────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: #c8d6e6;
-  border-radius: 999px;
-  border: 2px solid #eef3f8;
+  background: var(--tk-border);
+  border-radius: var(--tk-r-pill);
+}
+::-webkit-scrollbar-thumb:hover { background: #C0CFDE; }
+
+/* ─── Utility classes ───────────────────────────── */
+.eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tk-primary-dark);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #aebed1;
-}
+.capitalize { text-transform: capitalize; }
