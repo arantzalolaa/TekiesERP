@@ -11,7 +11,13 @@ import {
   IonText,
   IonToast, IonHeader, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { lockClosedOutline, mailOutline, sunnyOutline } from 'ionicons/icons';
+import {
+  eyeOffOutline,
+  eyeOutline,
+  lockClosedOutline,
+  mailOutline,
+  sunnyOutline,
+} from 'ionicons/icons';
 import { AuthService } from '../../services/auth.service';
 import { ROLE_HOME } from '../../shared/utils/roles';
 
@@ -20,7 +26,7 @@ import { ROLE_HOME } from '../../shared/utils/roles';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonToolbar, IonHeader, 
+  imports: [IonToolbar, IonHeader,
     CommonModule,
     FormsModule,
     RouterModule,
@@ -36,6 +42,7 @@ import { ROLE_HOME } from '../../shared/utils/roles';
 export class LoginPage {
   email = '';
   password = '';
+  showPassword = false;
 
   loading = false;
   toastOpen = false;
@@ -49,7 +56,13 @@ export class LoginPage {
       mailOutline,
       lockClosedOutline,
       sunnyOutline,
+      eyeOutline,
+      eyeOffOutline,
     });
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   async login() {
