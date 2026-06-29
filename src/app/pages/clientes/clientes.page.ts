@@ -30,7 +30,7 @@ import { Cliente, TipoCliente } from '../../models/database.models';
   templateUrl: './clientes.page.html',
   styleUrls: ['./clientes.page.scss'],
   standalone: true,
-  imports: [IonToolbar, IonHeader, 
+  imports: [IonToolbar, IonHeader,
     CommonModule,
     FormsModule,
     RouterModule,
@@ -49,6 +49,7 @@ export class ClientesPage implements OnInit {
   filteredClientes: Cliente[] = [];
 
   tipos: TipoCliente[] = ['final', 'distribuidor', 'empresa'];
+  estatusOptions = ['Activo', 'Inactivo', 'Suspendido'];
 
   loading = true;
   saving = false;
@@ -115,6 +116,7 @@ export class ClientesPage implements OnInit {
         cliente.telefono || '',
         cliente.ciudad || '',
         cliente.estado_republica || '',
+        cliente.estatus || '',
       ]
         .join(' ')
         .toLowerCase()
@@ -155,7 +157,7 @@ export class ClientesPage implements OnInit {
       estado_republica: this.form.estado_republica?.trim() || null,
       limite_credito: Number(this.form.limite_credito) || 0,
       saldo_pendiente: Number(this.form.saldo_pendiente) || 0,
-      estatus: this.form.estatus?.trim() || 'Activo',
+      estatus: this.form.estatus || 'Activo',
     };
 
     if (payload.tipo === 'distribuidor' && payload.limite_credito === 0) {
