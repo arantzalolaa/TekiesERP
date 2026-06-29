@@ -171,7 +171,12 @@
 
         <label>
           Método de pago
-          <ion-input [(ngModel)]="form.metodo_pago" placeholder="Tarjeta"></ion-input>
+          <ion-select [(ngModel)]="form.metodo_pago" interface="popover">
+            <ion-select-option value="Tarjeta">Tarjeta</ion-select-option>
+            <ion-select-option value="Transferencia">Transferencia</ion-select-option>
+            <ion-select-option value="Efectivo">Efectivo</ion-select-option>
+            <ion-select-option value="Crédito">Crédito</ion-select-option>
+          </ion-select>
         </label>
 
         <label>
