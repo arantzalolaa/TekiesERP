@@ -51,6 +51,7 @@ export class ProveedoresPage implements OnInit {
   estados = ['Activo', 'Inactivo', 'Suspendido'];
   tiposSuministro = [
     'Componentes electrónicos',
+    'Microcontroladores',
     'Sensores UV',
     'Baterías',
     'Carcasas y correas',
@@ -102,8 +103,21 @@ export class ProveedoresPage implements OnInit {
   async loadProveedores() {
     this.loading = true;
     this.proveedores = await this.proveedoresService.getAll();
+    this.syncOptionValues();
     this.applyFilter();
     this.loading = false;
+  }
+
+  syncOptionValues() {
+    this.proveedores.forEach((proveedor) => {
+      if (proveedor.tipo_suministro && !this.tiposSuministro.includes(proveedor.tipo_suministro)) {
+        this.tiposSuministro = [...this.tiposSuministro, proveedor.tipo_suministro];
+      }
+
+      if (proveedor.estado && !this.estados.includes(proveedor.estado)) {
+        this.estados = [...this.estados, proveedor.estado];
+      }
+    });
   }
 
   applyFilter() {
@@ -137,6 +151,14 @@ export class ProveedoresPage implements OnInit {
   }
 
   openEdit(proveedor: Proveedor) {
+    if (proveedor.tipo_suministro && !this.tiposSuministro.includes(proveedor.tipo_suministro)) {
+      this.tiposSuministro = [...this.tiposSuministro, proveedor.tipo_suministro];
+    }
+
+    if (proveedor.estado && !this.estados.includes(proveedor.estado)) {
+      this.estados = [...this.estados, proveedor.estado];
+    }
+
     this.form = { ...proveedor };
     this.editingId = proveedor.id ?? null;
     this.showForm = true;
