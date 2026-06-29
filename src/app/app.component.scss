@@ -1,41 +1,37 @@
 :host {
   display: block;
-  width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  background: #f8fafc;
 }
 
 ion-app {
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  background: #f8fafc;
 }
 
 .app-layout {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: grid;
   grid-template-columns: 292px minmax(0, 1fr);
   background: #f8fafc;
-  overflow: hidden;
   transition: grid-template-columns 0.22s ease;
 }
 
 .app-layout.sidebar-collapsed {
-  grid-template-columns: 82px minmax(0, 1fr);
+  grid-template-columns: 0 minmax(0, 1fr);
 }
 
 .app-layout.auth-layout {
   display: block;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
 }
 
 .app-main {
   position: relative;
   min-width: 0;
   width: 100%;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
   background:
     radial-gradient(circle at top right, rgba(116, 207, 224, 0.12), transparent 34%),
     #f8fafc;
@@ -43,13 +39,23 @@ ion-app {
 
 .app-main ion-router-outlet {
   display: block;
+  position: relative;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
+}
+
+:host ::ng-deep ion-router-outlet > .ion-page {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  contain: initial !important;
 }
 
 .sidebar {
-  position: relative;
-  width: 100%;
+  position: sticky;
+  top: 0;
+  width: 292px;
   height: 100vh;
   padding: 22px 18px;
   display: flex;
@@ -59,15 +65,23 @@ ion-app {
     linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   border-right: 1px solid rgba(221, 231, 242, 0.95);
   overflow: hidden;
+  transition: transform 0.22s ease, opacity 0.18s ease;
+  z-index: 20;
+}
+
+.app-layout.sidebar-collapsed .sidebar {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .sidebar-toggle {
   position: absolute;
   top: 18px;
-  right: -15px;
+  right: 14px;
   z-index: 10;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border: 1px solid #dde7f2;
   border-radius: 999px;
   background: #ffffff;
@@ -143,11 +157,6 @@ ion-app {
   min-height: 74px;
 }
 
-.app-layout.sidebar-collapsed .user-card {
-  padding: 12px;
-  justify-content: center;
-}
-
 .avatar {
   width: 44px;
   height: 44px;
@@ -207,11 +216,6 @@ ion-app {
     box-shadow 0.16s ease;
 }
 
-.app-layout.sidebar-collapsed .menu-link {
-  justify-content: center;
-  padding: 0;
-}
-
 .menu-link.hidden {
   display: none;
 }
@@ -225,10 +229,6 @@ ion-app {
 .menu-link:hover {
   background: #f2f6fb;
   transform: translateX(2px);
-}
-
-.app-layout.sidebar-collapsed .menu-link:hover {
-  transform: translateY(-1px);
 }
 
 .menu-link.active {
@@ -281,6 +281,11 @@ ion-app {
   font-size: 22px;
 }
 
+.app-layout.sidebar-collapsed .floating-menu-btn {
+  display: grid;
+  place-items: center;
+}
+
 @media (max-width: 900px) {
   .app-layout,
   .app-layout.sidebar-collapsed {
@@ -289,12 +294,8 @@ ion-app {
 
   .sidebar {
     position: fixed;
-    z-index: 999;
     top: 0;
     left: 0;
-    width: 292px;
-    transform: translateX(0);
-    transition: transform 0.22s ease;
     box-shadow: 20px 0 60px rgba(62, 74, 94, 0.18);
   }
 
@@ -305,9 +306,5 @@ ion-app {
   .floating-menu-btn {
     display: grid;
     place-items: center;
-  }
-
-  .sidebar-toggle {
-    right: 14px;
   }
 }
