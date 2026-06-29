@@ -36,7 +36,7 @@
           <ion-input
             type="email"
             [(ngModel)]="email"
-            placeholder="arantza@tekiestek.com"
+            placeholder="Correo electrónico"
           ></ion-input>
         </div>
 
@@ -44,10 +44,14 @@
         <div class="input-box">
           <ion-icon name="lock-closed-outline"></ion-icon>
           <ion-input
-            type="password"
+            [type]="showPassword ? 'text' : 'password'"
             [(ngModel)]="password"
-            placeholder="••••••••"
+            placeholder="***********"
           ></ion-input>
+
+          <button class="password-eye" type="button" (click)="togglePasswordVisibility()">
+            <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
         </div>
 
         <ion-button expand="block" class="primary-btn" (click)="login()" [disabled]="loading">
