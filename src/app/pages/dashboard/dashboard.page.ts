@@ -244,19 +244,19 @@ export class DashboardPage implements OnInit {
         label: 'Ingresos',
         value: this.ingresos,
         width: Math.max(8, Math.round((Math.max(0, this.ingresos) / max) * 100)),
-        className: 'income',
+        className: 'bar-fill income',
       },
       {
         label: 'Gastos',
         value: this.gastos,
         width: Math.max(8, Math.round((Math.max(0, this.gastos) / max) * 100)),
-        className: 'expense',
+        className: 'bar-fill expense',
       },
       {
         label: 'Utilidad',
         value: this.utilidad,
         width: Math.max(8, Math.round((Math.max(0, this.utilidad) / max) * 100)),
-        className: 'profit',
+        className: 'bar-fill profit',
       },
     ];
   }
