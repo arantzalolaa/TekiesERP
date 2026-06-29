@@ -133,7 +133,7 @@
       <div class="form-grid">
         <label>
           Cliente
-          <ion-select [(ngModel)]="form.cliente_id" interface="popover" placeholder="Seleccionar">
+          <ion-select [(ngModel)]="form.cliente_id" interface="popover" placeholder="Seleccionar cliente">
             <ion-select-option *ngFor="let cliente of clientes" [value]="cliente.id">
               {{ cliente.nombre }}
             </ion-select-option>
@@ -146,7 +146,7 @@
             [(ngModel)]="form.producto_id"
             (ionChange)="onProductoChange()"
             interface="popover"
-            placeholder="Seleccionar"
+            placeholder="Seleccionar producto"
           >
             <ion-select-option *ngFor="let producto of productos" [value]="producto.id">
               {{ producto.nombre }} · Stock {{ producto.stock }}
@@ -161,12 +161,12 @@
 
         <label>
           Cantidad
-          <ion-input type="number" [(ngModel)]="form.cantidad"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.cantidad" placeholder="Ej. 3"></ion-input>
         </label>
 
         <label>
           Precio unitario
-          <ion-input type="number" [(ngModel)]="form.precio_unitario"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.precio_unitario" placeholder="Ej. 1499"></ion-input>
         </label>
 
         <label>
@@ -187,14 +187,9 @@
           </ion-select>
         </label>
 
-        <label class="toggle-label">
-          <span>Pagada</span>
-          <ion-toggle [(ngModel)]="form.pagada"></ion-toggle>
-        </label>
-
         <label class="full">
           Notas
-          <ion-textarea [(ngModel)]="form.notas" rows="3" placeholder="Notas de la venta"></ion-textarea>
+          <ion-textarea [(ngModel)]="form.notas" rows="3" placeholder="Ej. Venta para distribuidor local"></ion-textarea>
         </label>
       </div>
 
