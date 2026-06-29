@@ -2,13 +2,11 @@
   <div
     class="app-layout"
     [class.auth-layout]="!showMenu"
-    [class.sidebar-collapsed]="sidebarCollapsed && showMenu"
+    [class.sidebar-closed]="sidebarClosed && showMenu"
   >
     <aside class="sidebar" *ngIf="showMenu">
-      <button class="sidebar-toggle" (click)="toggleSidebar()">
-        <ion-icon
-          [name]="sidebarCollapsed ? 'menu-outline' : 'chevron-back-outline'"
-        ></ion-icon>
+      <button class="sidebar-toggle" (click)="toggleSidebar()" title="Ocultar menú">
+        <ion-icon name="chevron-back-outline"></ion-icon>
       </button>
 
       <div class="sidebar-brand">
@@ -16,7 +14,7 @@
           <img src="assets/logo-tekies.png" alt="TeKiesTeK ERP" />
         </div>
 
-        <div class="brand-text" *ngIf="!sidebarCollapsed">
+        <div class="brand-text">
           <p>TeKiesTeK</p>
           <h2>Solutions</h2>
         </div>
@@ -27,7 +25,7 @@
           {{ profile?.nombre?.charAt(0) || 'U' }}
         </div>
 
-        <div class="user-info" *ngIf="!sidebarCollapsed">
+        <div class="user-info">
           <strong>{{ profile?.nombre || 'Usuario' }}</strong>
           <span>{{ getRoleLabel() }}</span>
         </div>
@@ -41,27 +39,26 @@
           [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
           class="menu-link"
           [class.hidden]="!canShowItem(item)"
-          [title]="sidebarCollapsed ? item.title : ''"
         >
           <ion-icon [name]="item.icon"></ion-icon>
-          <span *ngIf="!sidebarCollapsed">{{ item.title }}</span>
+          <span>{{ item.title }}</span>
         </a>
       </nav>
 
       <div class="sidebar-footer">
         <button class="logout-btn" (click)="logout()">
           <ion-icon name="log-out-outline"></ion-icon>
-          <span *ngIf="!sidebarCollapsed">Cerrar sesión</span>
+          <span>Cerrar sesión</span>
         </button>
       </div>
     </aside>
 
     <main class="app-main">
-      <button class="floating-menu-btn" *ngIf="showMenu" (click)="toggleSidebar()">
+      <button class="floating-menu-btn" *ngIf="showMenu" (click)="toggleSidebar()" title="Mostrar menú">
         <ion-icon name="menu-outline"></ion-icon>
       </button>
 
-      <ion-router-outlet></ion-router-outlet>
+      <router-outlet></router-outlet>
     </main>
   </div>
 </ion-app>
