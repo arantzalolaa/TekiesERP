@@ -96,12 +96,12 @@
               <td>{{ formatLabel(movimiento.modulo_origen) }}</td>
 
               <td>
-                <span class="status" [class.off]="!movimiento.pagado">
-                  {{ getPagoLabel(movimiento.pagado) }}
+                <span class="status" [class.off]="getPagoLabel(movimiento) !== 'Liquidado'">
+                  {{ getPagoLabel(movimiento) }}
                 </span>
               </td>
 
-              <td>{{ movimiento.notas || '—' }}</td>
+              <td>{{ cleanNotas(movimiento.notas) || '—' }}</td>
 
               <td>
                 <div class="table-actions">
@@ -157,12 +157,12 @@
 
         <label>
           Concepto
-          <ion-input [(ngModel)]="form.concepto" placeholder="Publicidad Meta Ads"></ion-input>
+          <ion-input [(ngModel)]="form.concepto" placeholder="Ej. Publicidad Meta Ads"></ion-input>
         </label>
 
         <label>
           Monto
-          <ion-input type="number" [(ngModel)]="form.monto"></ion-input>
+          <ion-input type="number" [(ngModel)]="form.monto" placeholder="Ej. 1200"></ion-input>
         </label>
 
         <label>
@@ -174,14 +174,18 @@
           </ion-select>
         </label>
 
-        <label class="toggle-label">
-          <span>Liquidado</span>
-          <ion-toggle [(ngModel)]="form.pagado"></ion-toggle>
+        <label>
+          Estatus
+          <ion-select [(ngModel)]="estatusForm" interface="popover">
+            <ion-select-option *ngFor="let estatus of estatusOptions" [value]="estatus">
+              {{ estatus }}
+            </ion-select-option>
+          </ion-select>
         </label>
 
         <label class="full">
           Notas
-          <ion-textarea [(ngModel)]="form.notas" rows="3" placeholder="Notas del movimiento"></ion-textarea>
+          <ion-textarea [(ngModel)]="form.notas" rows="3" placeholder="Ej. Movimiento registrado manualmente"></ion-textarea>
         </label>
       </div>
 
