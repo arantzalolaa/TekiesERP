@@ -33,9 +33,9 @@
 .brand-panel > * { position: relative; z-index: 1; }
 
 .logo-card {
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
+  width: 82px;
+  height: 82px;
+  border-radius: 24px;
   background: rgba(255, 255, 255, 0.10);
   display: grid;
   place-items: center;
@@ -44,8 +44,8 @@
 }
 
 .logo-card img {
-  width: 34px;
-  height: 34px;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
   filter: brightness(0) invert(1);
 }
@@ -185,6 +185,28 @@ ion-input {
   font-size: 14px;
 }
 
+.password-eye {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--tk-r-sm);
+  background: transparent;
+  color: var(--tk-placeholder);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.password-eye:hover {
+  background: var(--tk-bg-alt);
+  color: var(--tk-primary-dark);
+}
+
+.password-eye ion-icon {
+  font-size: 19px;
+}
+
 .primary-btn {
   margin-top: 24px;
   height: 48px;
@@ -211,6 +233,33 @@ ion-input {
 }
 
 .switch-text a:hover { text-decoration: underline; }
+
+.back-auth-btn {
+  width: fit-content;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 0 12px;
+  border-radius: var(--tk-r-pill);
+  background: var(--tk-bg);
+  color: var(--tk-muted);
+  border: 1px solid var(--tk-border-light);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+
+.back-auth-btn:hover {
+  background: var(--tk-bg-alt);
+  color: var(--tk-primary-dark);
+}
+
+.back-auth-btn ion-icon {
+  font-size: 17px;
+}
 
 /* ─── Responsive ────────────────────────────────────────── */
 @media (max-width: 860px) {
