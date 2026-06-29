@@ -80,11 +80,15 @@
               <td>{{ compra.cantidad }}</td>
               <td>{{ formatCurrency(compra.costo_unitario) }}</td>
               <td>{{ formatCurrency(compra.total) }}</td>
-              <td>{{ compra.metodo_pago || '—' }}</td>
+              <td>
+                <span class="payment-pill" [ngClass]="getMetodoClass(compra.metodo_pago)">
+                  {{ formatLabel(compra.metodo_pago || '') }}
+                </span>
+              </td>
 
               <td>
                 <span class="status" [class.off]="compra.estado !== 'completada'">
-                  {{ compra.estado }}
+                  {{ formatEstado(compra.estado) }}
                 </span>
               </td>
 
@@ -116,8 +120,8 @@
     <section class="modal-card">
       <div class="form-header">
         <div>
-          <p class="eyebrow">Nueva</p>
-          <h3>Registrar compra</h3>
+          <p class="eyebrow">{{ editingId ? 'Editar' : 'Nueva' }}</p>
+          <h3>{{ editingId ? 'Actualizar compra' : 'Registrar compra' }}</h3>
         </div>
 
         <button class="icon-btn" (click)="closeForm()">
@@ -167,19 +171,18 @@
         <label>
           Método de pago
           <ion-select [(ngModel)]="form.metodo_pago" interface="popover">
-            <ion-select-option value="Transferencia">Transferencia</ion-select-option>
-            <ion-select-option value="Tarjeta">Tarjeta</ion-select-option>
-            <ion-select-option value="Efectivo">Efectivo</ion-select-option>
-            <ion-select-option value="Crédito proveedor">Crédito proveedor</ion-select-option>
+            <ion-select-option *ngFor="let metodo of metodosPago" [value]="metodo">
+              {{ metodo }}
+            </ion-select-option>
           </ion-select>
         </label>
 
         <label>
           Estado
           <ion-select [(ngModel)]="form.estado" interface="popover">
-            <ion-select-option value="pendiente">Pendiente</ion-select-option>
-            <ion-select-option value="completada">Completada</ion-select-option>
-            <ion-select-option value="cancelada">Cancelada</ion-select-option>
+            <ion-select-option *ngFor="let estado of estados" [value]="estado.value">
+              {{ estado.label }}
+            </ion-select-option>
           </ion-select>
         </label>
 
