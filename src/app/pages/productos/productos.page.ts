@@ -31,7 +31,7 @@ import { Producto } from '../../models/database.models';
   templateUrl: './productos.page.html',
   styleUrls: ['./productos.page.scss'],
   standalone: true,
-  imports: [IonToolbar, IonHeader, 
+  imports: [IonToolbar, IonHeader,
     CommonModule,
     FormsModule,
     RouterModule,
@@ -83,11 +83,11 @@ export class ProductosPage implements OnInit {
       nombre: '',
       sku: '',
       descripcion: '',
-      categoria: 'Pulsera UV',
-      stock: 0,
-      stock_minimo: 20,
-      costo_estimado: 0,
-      precio_venta: 0,
+      categoria: '',
+      stock: null as any,
+      stock_minimo: null as any,
+      costo_estimado: null as any,
+      precio_venta: null as any,
       activo: true,
     };
   }
@@ -144,7 +144,7 @@ export class ProductosPage implements OnInit {
       return;
     }
 
-    if (this.form.precio_venta < this.form.costo_estimado) {
+    if (Number(this.form.precio_venta) < Number(this.form.costo_estimado)) {
       this.showToast('El precio de venta no debería ser menor al costo.');
       return;
     }
@@ -157,7 +157,7 @@ export class ProductosPage implements OnInit {
       descripcion: this.form.descripcion?.trim() || null,
       categoria: this.form.categoria.trim(),
       stock: Number(this.form.stock) || 0,
-      stock_minimo: Number(this.form.stock_minimo) || 0,
+      stock_minimo: Number(this.form.stock_minimo) || 20,
       costo_estimado: Number(this.form.costo_estimado) || 0,
       precio_venta: Number(this.form.precio_venta) || 0,
       activo: !!this.form.activo,
