@@ -87,8 +87,8 @@ export class ClientesPage implements OnInit {
       telefono: '',
       ciudad: '',
       estado_republica: '',
-      limite_credito: 0,
-      saldo_pendiente: 0,
+      limite_credito: null as any,
+      saldo_pendiente: null as any,
       estatus: 'Activo',
     };
   }
@@ -198,6 +198,11 @@ export class ClientesPage implements OnInit {
 
     this.showToast('Cliente eliminado.');
     await this.loadClientes();
+  }
+
+  formatTipo(value: string): string {
+    if (!value) return '—';
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   }
 
   formatCurrency(value: number | undefined): string {
