@@ -32,7 +32,7 @@ import { Finanzas, TipoMovimiento } from '../../models/database.models';
   templateUrl: './finanzas.page.html',
   styleUrls: ['./finanzas.page.scss'],
   standalone: true,
-  imports: [IonToolbar, IonHeader, 
+  imports: [IonToolbar, IonHeader,
     CommonModule,
     FormsModule,
     RouterModule,
@@ -53,6 +53,7 @@ export class FinanzasPage implements OnInit {
   filteredMovimientos: Finanzas[] = [];
 
   tipos: TipoMovimiento[] = ['ingreso', 'gasto'];
+  origenes = ['finanzas', 'ventas', 'compras', 'inventario', 'operación'];
 
   loading = true;
   saving = false;
@@ -153,7 +154,7 @@ export class FinanzasPage implements OnInit {
       tipo: this.form.tipo,
       concepto: this.form.concepto.trim(),
       monto: Number(this.form.monto),
-      modulo_origen: this.form.modulo_origen?.trim() || 'finanzas',
+      modulo_origen: this.form.modulo_origen || 'finanzas',
       referencia_id: this.form.referencia_id ? Number(this.form.referencia_id) : null,
       pagado: !!this.form.pagado,
       notas: this.form.notas?.trim() || null,
@@ -209,6 +210,19 @@ export class FinanzasPage implements OnInit {
 
   getFlujo(): number {
     return this.getIngresos() - this.getGastos();
+  }
+
+  getPagoLabel(pagado: boolean): string {
+    return pagado ? 'Liquidado' : 'Pendiente';
+  }
+
+  formatLabel(value: string | null | undefined): string {
+    if (!value) return '—';
+
+    return value
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   }
 
   formatCurrency(value: number | undefined): string {
