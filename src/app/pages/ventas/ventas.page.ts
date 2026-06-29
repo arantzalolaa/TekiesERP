@@ -31,7 +31,7 @@ import { Cliente, Producto, Venta } from '../../models/database.models';
   templateUrl: './ventas.page.html',
   styleUrls: ['./ventas.page.scss'],
   standalone: true,
-  imports: [IonTitle, IonToolbar, IonHeader, 
+  imports: [IonTitle, IonToolbar, IonHeader,
     CommonModule,
     FormsModule,
     RouterModule,
@@ -52,6 +52,14 @@ export class VentasPage implements OnInit {
   filteredVentas: VentaDetalle[] = [];
   clientes: Cliente[] = [];
   productos: Producto[] = [];
+
+  estados = [
+    { value: 'pendiente', label: 'Pendiente' },
+    { value: 'completada', label: 'Completada' },
+    { value: 'cancelada', label: 'Cancelada' },
+  ];
+
+  metodosPago = ['Tarjeta', 'Transferencia', 'Efectivo', 'Crédito'];
 
   loading = true;
   saving = false;
@@ -140,8 +148,17 @@ export class VentasPage implements OnInit {
     this.showForm = true;
   }
 
-  openEdit(venta: VentaDetalle) {
-    this.showToast('Para evitar duplicar movimientos de inventario, edita solo ventas nuevas desde Supabase si es necesario.');
+  async openEdit(venta: VentaDetalle) {
+    const data = await this.ventasService.getById(venta.id);
+
+    if (!data) {
+      this.showToast('No se pudo cargar la venta.');
+      return;
+    }
+
+    this.form = { ...data };
+    this.editingId = venta.id;
+    this.showForm = true;
   }
 
   closeForm() {
@@ -175,7 +192,7 @@ export class VentasPage implements OnInit {
       return;
     }
 
-    if (Number(this.form.cantidad) > this.getSelectedProductStock()) {
+    if (!this.editingId && Number(this.form.cantidad) > this.getSelectedProductStock()) {
       this.showToast('No hay stock suficiente para esta venta.');
       return;
     }
@@ -195,7 +212,9 @@ export class VentasPage implements OnInit {
 
     this.saving = true;
 
-    const result = await this.ventasService.create(payload);
+    const result = this.editingId
+      ? await this.ventasService.update(this.editingId, payload)
+      : await this.ventasService.create(payload);
 
     this.saving = false;
 
@@ -204,7 +223,7 @@ export class VentasPage implements OnInit {
       return;
     }
 
-    this.showToast('Venta registrada.');
+    this.showToast(this.editingId ? 'Venta actualizada.' : 'Venta registrada.');
     this.closeForm();
     await this.loadData();
   }
@@ -227,6 +246,33 @@ export class VentasPage implements OnInit {
 
   getTotalPreview(): number {
     return (Number(this.form.cantidad) || 0) * (Number(this.form.precio_unitario) || 0);
+  }
+
+  getPagoLabel(venta: VentaDetalle): string {
+    if (!venta.pagada) return 'Crédito';
+    return this.formatLabel(venta.metodo_pago || 'Pagada');
+  }
+
+  getPagoClass(venta: VentaDetalle): string {
+    const metodo = (venta.pagada ? venta.metodo_pago : 'Crédito')?.toLowerCase() || '';
+
+    if (metodo.includes('crédito') || metodo.includes('credito')) return 'credit';
+    if (metodo.includes('transferencia')) return 'transfer';
+    if (metodo.includes('efectivo')) return 'cash';
+    return 'card';
+  }
+
+  formatEstado(value: string | null | undefined): string {
+    return this.formatLabel(value || '');
+  }
+
+  formatLabel(value: string): string {
+    if (!value) return '—';
+
+    return value
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   }
 
   formatCurrency(value: number | undefined): string {
