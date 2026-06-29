@@ -57,7 +57,7 @@ export class ComprasPage implements OnInit {
     { value: 'cancelada', label: 'Cancelada' },
   ];
 
-  metodosPago = ['Transferencia', 'Tarjeta', 'Efectivo', 'Credito proveedor'];
+  metodosPago = ['Transferencia', 'Tarjeta', 'Efectivo', 'Crédito proveedor'];
 
   loading = true;
   saving = false;
