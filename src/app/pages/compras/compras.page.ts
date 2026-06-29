@@ -30,7 +30,7 @@ import { Compra, Inventario, Proveedor } from '../../models/database.models';
   templateUrl: './compras.page.html',
   styleUrls: ['./compras.page.scss'],
   standalone: true,
-  imports: [IonToolbar, IonHeader, 
+  imports: [IonToolbar, IonHeader,
     CommonModule,
     FormsModule,
     RouterModule,
@@ -50,6 +50,14 @@ export class ComprasPage implements OnInit {
   filteredCompras: CompraDetalle[] = [];
   proveedores: Proveedor[] = [];
   inventario: Inventario[] = [];
+
+  estados = [
+    { value: 'pendiente', label: 'Pendiente' },
+    { value: 'completada', label: 'Completada' },
+    { value: 'cancelada', label: 'Cancelada' },
+  ];
+
+  metodosPago = ['Transferencia', 'Tarjeta', 'Efectivo', 'Crédito proveedor'];
 
   loading = true;
   saving = false;
@@ -136,8 +144,17 @@ export class ComprasPage implements OnInit {
     this.showForm = true;
   }
 
-  openEdit(compra: CompraDetalle) {
-    this.showToast('Para evitar duplicar stock, registra una nueva compra o edita desde Supabase si es necesario.');
+  async openEdit(compra: CompraDetalle) {
+    const data = await this.comprasService.getById(compra.id);
+
+    if (!data) {
+      this.showToast('No se pudo cargar la compra.');
+      return;
+    }
+
+    this.form = { ...data };
+    this.editingId = compra.id;
+    this.showForm = true;
   }
 
   closeForm() {
@@ -185,7 +202,9 @@ export class ComprasPage implements OnInit {
 
     this.saving = true;
 
-    const result = await this.comprasService.create(payload);
+    const result = this.editingId
+      ? await this.comprasService.update(this.editingId, payload)
+      : await this.comprasService.create(payload);
 
     this.saving = false;
 
@@ -194,7 +213,7 @@ export class ComprasPage implements OnInit {
       return;
     }
 
-    this.showToast('Compra registrada.');
+    this.showToast(this.editingId ? 'Compra actualizada.' : 'Compra registrada.');
     this.closeForm();
     await this.loadData();
   }
@@ -213,6 +232,28 @@ export class ComprasPage implements OnInit {
 
     this.showToast('Compra eliminada.');
     await this.loadData();
+  }
+
+  getMetodoClass(metodo: string | null | undefined): string {
+    const value = metodo?.toLowerCase() || '';
+
+    if (value.includes('crédito') || value.includes('credito')) return 'credit';
+    if (value.includes('transferencia')) return 'transfer';
+    if (value.includes('efectivo')) return 'cash';
+    return 'card';
+  }
+
+  formatEstado(value: string | null | undefined): string {
+    return this.formatLabel(value || '');
+  }
+
+  formatLabel(value: string): string {
+    if (!value) return '—';
+
+    return value
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   }
 
   formatCurrency(value: number | undefined): string {
