@@ -10,7 +10,6 @@ import {
   IonSelect,
   IonSelectOption,
   IonTextarea,
-  IonToggle,
   IonSpinner,
   IonToast, IonHeader, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -26,6 +25,8 @@ import {
 } from 'ionicons/icons';
 import { FinanzasService } from '../../services/finanzas.service';
 import { Finanzas, TipoMovimiento } from '../../models/database.models';
+
+type EstatusFinanciero = 'Liquidado' | 'Pendiente' | 'Cancelado';
 
 @Component({
   selector: 'app-finanzas',
@@ -43,7 +44,6 @@ import { Finanzas, TipoMovimiento } from '../../models/database.models';
     IonSelect,
     IonSelectOption,
     IonTextarea,
-    IonToggle,
     IonSpinner,
     IonToast,
   ],
@@ -54,6 +54,8 @@ export class FinanzasPage implements OnInit {
 
   tipos: TipoMovimiento[] = ['ingreso', 'gasto'];
   origenes = ['finanzas', 'ventas', 'compras', 'inventario', 'operación'];
+  estatusOptions: EstatusFinanciero[] = ['Liquidado', 'Pendiente', 'Cancelado'];
+  estatusForm: EstatusFinanciero = 'Liquidado';
 
   loading = true;
   saving = false;
@@ -88,7 +90,7 @@ export class FinanzasPage implements OnInit {
       fecha: new Date().toISOString().slice(0, 10),
       tipo: 'gasto',
       concepto: '',
-      monto: 0,
+      monto: null as any,
       modulo_origen: 'finanzas',
       referencia_id: null,
       pagado: true,
@@ -117,7 +119,8 @@ export class FinanzasPage implements OnInit {
         movimiento.tipo,
         movimiento.concepto,
         movimiento.modulo_origen || '',
-        movimiento.notas || '',
+        this.getPagoLabel(movimiento),
+        this.cleanNotas(movimiento.notas),
       ]
         .join(' ')
         .toLowerCase()
@@ -127,12 +130,17 @@ export class FinanzasPage implements OnInit {
 
   openCreate() {
     this.form = this.getEmptyForm();
+    this.estatusForm = 'Liquidado';
     this.editingId = null;
     this.showForm = true;
   }
 
   openEdit(movimiento: Finanzas) {
-    this.form = { ...movimiento };
+    this.form = {
+      ...movimiento,
+      notas: this.cleanNotas(movimiento.notas),
+    };
+    this.estatusForm = this.getPagoLabel(movimiento) as EstatusFinanciero;
     this.editingId = movimiento.id ?? null;
     this.showForm = true;
   }
@@ -140,6 +148,7 @@ export class FinanzasPage implements OnInit {
   closeForm() {
     this.showForm = false;
     this.editingId = null;
+    this.estatusForm = 'Liquidado';
     this.form = this.getEmptyForm();
   }
 
@@ -149,6 +158,11 @@ export class FinanzasPage implements OnInit {
       return;
     }
 
+    const notasLimpias = this.cleanNotas(this.form.notas).trim();
+    const notas = this.estatusForm === 'Cancelado'
+      ? `[estatus:cancelado] ${notasLimpias}`.trim()
+      : notasLimpias || null;
+
     const payload: Finanzas = {
       fecha: this.form.fecha,
       tipo: this.form.tipo,
@@ -156,8 +170,8 @@ export class FinanzasPage implements OnInit {
       monto: Number(this.form.monto),
       modulo_origen: this.form.modulo_origen || 'finanzas',
       referencia_id: this.form.referencia_id ? Number(this.form.referencia_id) : null,
-      pagado: !!this.form.pagado,
-      notas: this.form.notas?.trim() || null,
+      pagado: this.estatusForm === 'Liquidado',
+      notas,
     };
 
     this.saving = true;
@@ -212,8 +226,13 @@ export class FinanzasPage implements OnInit {
     return this.getIngresos() - this.getGastos();
   }
 
-  getPagoLabel(pagado: boolean): string {
-    return pagado ? 'Liquidado' : 'Pendiente';
+  getPagoLabel(movimiento: Finanzas): EstatusFinanciero {
+    if (movimiento.notas?.includes('[estatus:cancelado]')) return 'Cancelado';
+    return movimiento.pagado ? 'Liquidado' : 'Pendiente';
+  }
+
+  cleanNotas(value: string | null | undefined): string {
+    return (value || '').replace('[estatus:cancelado]', '').trim();
   }
 
   formatLabel(value: string | null | undefined): string {
