@@ -2,6 +2,11 @@
   <main class="auth-shell">
     <section class="form-panel">
       <div class="form-card">
+        <a routerLink="/login" class="back-auth-btn">
+          <span>←</span>
+          Volver al inicio
+        </a>
+
         <div class="mobile-brand">
           <ion-icon name="sunny-outline"></ion-icon>
           <span>TeKiesTeK ERP</span>
@@ -18,7 +23,7 @@
           <ion-input
             type="text"
             [(ngModel)]="nombre"
-            placeholder="Arantza Lizárraga"
+            placeholder="Nombre completo"
           ></ion-input>
         </div>
 
@@ -28,7 +33,7 @@
           <ion-input
             type="email"
             [(ngModel)]="email"
-            placeholder="arantza@tekiestek.com"
+            placeholder="Correo electrónico"
           ></ion-input>
         </div>
 
